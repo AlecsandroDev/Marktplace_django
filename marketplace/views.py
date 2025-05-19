@@ -15,7 +15,7 @@ def admin_login(request):
             return redirect('dashboard')
         else:
             messages.error(request, 'Credenciais inválidas ou você não tem permissão para acessar o admin.')
-            return redirect('admin_login')
+            return redirect('login')
 
     return render(request, "admin/login.html")
 
@@ -61,6 +61,26 @@ def admin_gerenciar_reporte_arquivado(request):
     return render(request, "admin/gerenciar_reporte_arquivado.html")
 
 @login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_pedidos(request):
+    return render(request, "admin/pedidos.html")
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_gerenciar_pedido(request):
+    return render(request, "admin/gerenciar_pedido.html")
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_pedidos_finalizados(request):
+    return render(request, "admin/pedidos_finalizados.html")
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_gerenciar_pedido_finalizado(request):
+    return render(request, "admin/gerenciar_pedido_finalizado.html")
+
+@login_required
 def admin_logout(request):
     logout(request)
-    return redirect('admin_login')
+    return redirect('login')

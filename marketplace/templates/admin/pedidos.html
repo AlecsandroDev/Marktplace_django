@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Pedidos</title>
+  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/reportes.css' %}">
+</head>
+
+<body>
+  {% include 'admin/navbar.html' %}
+
+  <div class="content">
+    <h1>Pedidos</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Comprador</th>
+          <th>Qtde</th>
+          <th>Preço</th>
+          <th>Total</th>
+          <th>Data de Pedido</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aguardando o DataBase -->
+        <!-- {% for reporte in reportes %}
+        <tr>
+          <td>{{ reporte.chamado }}</td>
+          <td>{{ reporte.titulo }}</td>
+          <td>{{ reporte.nome }}</td>
+          <td>{{ reporte.categoria }}</td>
+          <td>{{ reporte.data }}</td>
+          <td><a href="{% url 'acessar_reporte' reporte.id %}">Acessar</a></td>
+        </tr>
+        {% endfor %} -->
+      </tbody>
+    </table>
+  </div>
+  <div class="bottom-links">
+    <a href="{% url 'pedidos_finalizados' %}">Finalizados</a>
+  </div>
+</body>
+
+</html>
