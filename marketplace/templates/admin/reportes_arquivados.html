@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Reportes - Arquivados</title>
+  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/reportes.css' %}">
+</head>
+
+<body>
+  {% include 'admin/navbar.html' %}
+
+  <div class="content">
+    <h1>Reportes Arquivados</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Chamado</th>
+          <th>Título</th>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Data</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aguardando o DataBase -->
+        <!-- {% for reporte in reportes %}
+        <tr>
+          <td>{{ reporte.chamado }}</td>
+          <td>{{ reporte.titulo }}</td>
+          <td>{{ reporte.nome }}</td>
+          <td>{{ reporte.categoria }}</td>
+          <td>{{ reporte.data }}</td>
+          <td><a href="{% url 'acessar_reporte' reporte.id %}">Acessar</a></td>
+        </tr>
+        {% endfor %} -->
+      </tbody>
+    </table>
+  </div>
+  <div class="bottom-links">
+    <a href="{% url 'reportes' %}">Voltar</a>
+  </div>
+</body>
+
+</html>

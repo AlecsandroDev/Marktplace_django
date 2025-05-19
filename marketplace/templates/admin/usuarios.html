@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Usuários Admin</title>
+  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/usuarios.css' %}">
+</head>
+
+<body>
+  {% include 'admin/navbar.html' %}
+
+  <div class="container">
+    <h1>Usuários</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Telefone</th>
+          <th>Categoria</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Adicionar a função do DataBase -->
+        <!-- {% for usuario in usuarios %}
+        <tr>
+          <td>{{ usuario.id }}</td>
+          <td>{{ usuario.nome }}</td>
+          <td>{{ usuario.email }}</td>
+          <td>{{ usuario.telefone }}</td>
+          <td>{{ usuario.categoria }}</td>
+          <td><a class="editar" href="{% url 'editar_usuario' usuario.id %}">Editar</a></td>
+        </tr>
+        {% endfor %} -->
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>

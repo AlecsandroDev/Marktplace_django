@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Gerenciar Reporte Arquivado</title>
+  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/gerenciar_reporte.css' %}">
+</head>
+
+<body>
+  {% include 'admin/navbar.html' %}
+
+  <div class="container">
+    <h1>Informações do Reporte</h1>
+
+    <div class="reporte-box">
+      <div class="imagem-reporte">
+        {% if reporte.imagem %}
+        <img src="{{ reporte.imagem.url }}" alt="Imagem do Reporte">
+        {% else %}
+        <div class="placeholder">Sem Imagem</div>
+        {% endif %}
+      </div>
+
+      <div class="detalhes">
+        <p class="titulo"><strong>{{ reporte.nome }}</strong></p>
+        <p><strong>Usuário:</strong> {{ reporte.usuario.username }}</p>
+        <p class="descricao">
+          <strong>Descrição:</strong> {{ reporte.descricao }}
+        </p>
+        <p><strong>Data de Publicação:</strong> {{ reporte.data_publicacao|date:"d/m/Y" }}</p>
+        <p><strong>E-mail:</strong> <a href="mailto:{{ reporte.usuario.email }}">{{ reporte.usuario.email }}</a></p>
+
+        <div class="bottom-links">
+          <a href="{% url 'reportes_arquivados' %}">Voltar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

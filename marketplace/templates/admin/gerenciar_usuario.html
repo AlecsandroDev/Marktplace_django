@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Usuários Admin</title>
+  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/css/gerenciar_usuario.css' %}">
+</head>
+
+<body>
+  {% include 'admin/navbar.html' %}
+
+  <div class="container">
+    <h1>Informações da Conta</h1>
+    <form method="POST">
+      {% csrf_token %}
+      <label>Nome:</label>
+      <input type="text" name="nome" value="{{ usuario.nome }}">
+
+      <label>E-mail:</label>
+      <input type="email" name="email" value="{{ usuario.email }}">
+
+      <label>Telefone:</label>
+      <input type="text" name="telefone" value="{{ usuario.telefone }}">
+
+      <label>Idade:</label>
+      <input type="text" name="idade" value="{{ usuario.idade }}">
+
+      <label>Cidade:</label>
+      <input type="text" name="cidade" value="{{ usuario.cidade }}">
+
+      <label>Estado:</label>
+      <input type="text" name="estado" value="{{ usuario.estado }}">
+
+      <div class="buttons">
+        <input type="submit" value="Atualizar">
+        <a href="{% url 'usuarios' %}">Voltar</a>
+      </div>
+    </form>
+  </div>
+</body>
+
+</html>
