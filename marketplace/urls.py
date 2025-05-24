@@ -16,4 +16,8 @@ urlpatterns = [
     path('admin/pedidos_finalizados', views.admin_pedidos_finalizados, name='pedidos_finalizados'),
     path('admin/gerenciar_pedido_finalizado', views.admin_gerenciar_pedido_finalizado, name='gerenciar_pedido_finalizado'),
     path('admin/logout', views.admin_logout, name='logout'),
+    
+    path('comprador/login/', views.comprador_login, name='comprador_login'),
+    path('comprador/cadastro/', views.comprador_cadastro, name='comprador_cadastro'),
+    path('comprador/inicial/', views.comprador_inicial, name='pagina_inicial_comprador'),
 ]

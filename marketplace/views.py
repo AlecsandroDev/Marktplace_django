@@ -84,3 +84,50 @@ def admin_gerenciar_pedido_finalizado(request):
 def admin_logout(request):
     logout(request)
     return redirect('login')
+
+
+# ========================
+# VIEWS DO COMPRADOR
+# ========================
+
+def comprador_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+        user = authenticate(request, username=email, password=senha)
+        if user is not None:
+            login(request, user)
+            return redirect('pagina_inicial_comprador')
+        else:
+            messages.error(request, 'Email ou senha inválidos.')
+            return redirect('comprador_login')
+    return render(request, 'comprador/login.html')
+
+
+def comprador_cadastro(request):
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+        confirmar = request.POST.get('confirmar_senha')
+
+        if senha != confirmar:
+            messages.error(request, 'As senhas não coincidem.')
+            return redirect('comprador_cadastro')
+
+        from django.contrib.auth.models import User
+        if User.objects.filter(username=email).exists():
+            messages.error(request, 'Já existe um usuário com este email.')
+            return redirect('comprador_cadastro')
+
+        user = User.objects.create_user(username=email, email=email, password=senha, first_name=nome)
+        login(request, user)
+        return redirect('pagina_inicial_comprador')
+        
+    return render(request, 'comprador/cadastro.html')
+
+
+@login_required
+def comprador_inicial(request):
+    return render(request, 'comprador/inicial.html')
+
