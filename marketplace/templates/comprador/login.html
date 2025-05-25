@@ -33,15 +33,18 @@
           <input type="password" name="password" placeholder="Insira sua Senha" required>
         </div>
         
-        {# Seção "Esqueci minha senha" AGORA VISÍVEL #}
         <div class="forgot-password-link">
-            <a href="#">Esqueci minha senha</a> {# O href="#" é um placeholder para o link futuro #}
+            {# LINK ATUALIZADO AQUI #}
+            <a href="{% url 'marketplace:password_reset_request' %}">Esqueci minha senha</a>
         </div>
         
         <button type="submit" class="btn-login">Entrar</button>
       </form>
       
+      <div class="register-link">
+        <p>Não tem uma conta? <a href="{% url 'marketplace:comprador_cadastro' %}">Cadastre-se</a></p>
       </div>
+    </div>
     <div class="right-side">
       <span class="welcome-text">Seja<br>Bem<br>Vindo<br>De<br>Volta<br>às<br>Compras!</span>
     </div>

@@ -1,0 +1,271 @@
+/* marketplace/static/accounts/css/tela_home_comprador.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif; /* SUBSTITUA PELA FONTE DO SEU FIGMA */
+    background-color: #E8F5E9; /* UM TOM DE VERDE BEM CLARO PARA O FUNDO DA PÁGINA (exemplo) */
+    color: #333;
+    line-height: 1.5;
+}
+
+/* Cabeçalho / Barra Superior */
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 25px;
+    background-color: #4CAF50; /* VERDE PRINCIPAL DO SEU FIGMA PARA O HEADER */
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo-placeholder .site-name {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+.search-container {
+    flex-grow: 1;
+    margin: 0 20px;
+    max-width: 500px;
+}
+.search-container form {
+    display: flex;
+}
+.search-input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px 0 0 20px; /* Cantos arredondados */
+    font-size: 0.9em;
+    background-color: #f0f0f0; /* Fundo do input de busca */
+    color: #555; /* Cor do texto digitado */
+}
+.search-input::placeholder {
+    color: #999; /* Cor do placeholder "Pesquisar" */
+}
+.search-button-icon {
+    padding: 10px 12px;
+    border: none;
+    background-color: #f0f0f0; /* Mesma cor do input */
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+}
+.search-button-icon img {
+    height: 18px;
+    width: 18px;
+    vertical-align: middle;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaço entre ícones */
+}
+.action-icon img {
+    height: 24px; /* TAMANHO DOS ÍCONES */
+    width: 24px;
+    /* Para o ícone de perfil: "rosto estilizado em círculo preto com fundo cinza"
+       .profile-icon img { border-radius: 50%; background-color: #ccc; border: 1px solid black; }
+       Pode ser melhor usar uma imagem que já tenha esse estilo ou um div estilizado.
+    */
+}
+.action-icon.profile-icon img { /* Exemplo para o ícone de perfil específico */
+    border-radius: 50%;
+    background-color: #D0D0D0; /* Fundo cinza para o círculo do perfil */
+    padding: 2px; /* Se a imagem for só o contorno do rosto */
+}
+.logout-button {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    background-color: rgba(0,0,0,0.15);
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+.logout-button:hover {
+    background-color: rgba(0,0,0,0.3);
+}
+
+
+/* Menu de Navegação (Abas) */
+.main-navigation {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    background-color: #66BB6A; /* UM TOM DE VERDE PARA O MENU DE ABAS (exemplo) */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.nav-tab {
+    padding: 10px 25px;
+    margin: 0 5px;
+    text-decoration: none;
+    color: #E8F5E9; /* Texto claro para as abas */
+    font-weight: 500;
+    border-radius: 8px; /* Bordas arredondadas para o efeito de botão */
+    transition: background-color 0.3s, color 0.3s;
+}
+.nav-tab.active { /* Aba "Início" ativa */
+    background-color: white;
+    color: #3E6943; /* Texto verde escuro na aba ativa */
+    font-weight: bold;
+}
+.nav-tab:hover:not(.active) {
+    background-color: rgba(255,255,255,0.2);
+}
+
+/* Conteúdo Principal */
+.home-content-area {
+    max-width: 1200px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+.section-title {
+    font-size: 1.7em;
+    color: #38533B; /* Cor para títulos de seção */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Seção de Filtros */
+.filter-section {
+    margin-bottom: 30px;
+}
+.category-filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.filter-card { /* "cartão com bordas arredondadas e contorno fino" */
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid #DDEFE0; /* Contorno fino verde claro */
+    padding: 15px;
+    width: 160px; /* LARGURA DOS CARDS DE FILTRO */
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.filter-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.filter-card-image {
+    width: 100%; /* Imagem ocupa a largura do card */
+    height: 100px; /* ALTURA PARA IMAGEM DO FILTRO */
+    object-fit: cover; /* Ou 'contain' dependendo da imagem */
+    border-radius: 8px; /* Arredondamento para a imagem */
+    margin-bottom: 10px;
+}
+.filter-card-label {
+    font-weight: 500;
+    font-size: 0.95em;
+}
+.filtro-icone-texto { /* Para o fallback de ícone de texto */
+    font-size: 3em; display: block; margin-bottom: 10px;
+}
+
+
+/* Seção de Produtos */
+.product-section {
+    margin-top: 40px;
+}
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* Ajuste minmax para o tamanho do card */
+    gap: 25px;
+}
+.product-card {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.product-card-image {
+    width: 100%;
+    height: 190px; /* ALTURA DA IMAGEM DO PRODUTO */
+    object-fit: cover;
+}
+.product-card-info {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.product-card-name {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+.product-card-price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #4CAF50; /* Cor do preço (VERDE) */
+    margin: 10px 0;
+}
+.product-card-seller {
+    font-size: 0.8em;
+    color: #777;
+    margin-bottom: auto; /* Empurra para cima se houver espaço antes do botão */
+}
+.btn-add-cart {
+    display: block;
+    width: calc(100% - 30px); /* Largura menos o padding dos lados do .product-card-info */
+    margin: 15px auto 0 auto; /* Centraliza e adiciona margem no topo */
+    padding: 10px;
+    background-color: #4E7A53; /* COR DO BOTÃO DE ADICIONAR AO CARRINHO */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-add-cart:hover {
+    background-color: #3E6943;
+}
+
+/* Footer */
+.site-footer {
+    text-align: center;
+    padding: 25px;
+    background-color: #3E6943; /* VERDE ESCURO PARA O FOOTER */
+    color: #E8F5E9; /* Texto claro */
+    font-size: 0.9em;
+    margin-top: 40px;
+}
+
+/* Responsividade básica */
+@media (max-width: 850px) { /* Ponto de quebra onde o header pode precisar mudar */
+    .top-bar {
+        flex-wrap: wrap; /* Permite que os itens quebrem linha */
+        justify-content: center;
+        gap:10px;
+    }
+    .logo-placeholder { width: 100%; text-align: center; margin-bottom: 10px;}
+    .search-container { order: 2; width: 100%; margin: 0; max-width: none; }
+    .user-actions { order: 1; width:100%; justify-content: space-around; margin-bottom:10px; }
+}
+
+@media (max-width: 768px) {
+    .main-navigation {
+        font-size: 0.9em; /* Abas menores */
+    }
+    .nav-tab {
+        padding: 8px 15px;
+    }
+    .filter-card {
+        width: calc(50% - 10px); /* Dois filtros por linha em mobile */
+    }
+    .product-grid {
+        grid-template-columns: 1fr; /* Um produto por linha em mobile */
+    }
+}

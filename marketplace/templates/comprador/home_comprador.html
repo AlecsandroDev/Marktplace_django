@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - {{ nome_usuario|default:"Comprador" }}</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/tela_home_comprador.css' %}">
+    {# Para ícones mais elaborados, considere uma biblioteca como Font Awesome:
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    #}
+</head>
+<body>
+    <header class="topbar">
+        <div class="logo-area">
+            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="logo-text">UniMarket</a>
+        </div>
+        <div class="search-area">
+            <form method="GET" action="#" class="search-form"> {# Defina o 'action' para sua URL de busca no futuro #}
+                <input type="search" name="q" placeholder="Buscar produtos, comidas, vendedores..." class="search-bar">
+                <button type="submit" class="search-button">
+                    <img src="{% static 'accounts/img/search-icon.png' %}" alt="Buscar" class="search-icon-img">
+                </button>
+            </form>
+        </div>
+        <nav class="user-navigation">
+            <a href="#" class="nav-item" title="Favoritos">
+                <img src="{% static 'accounts/img/bookmark.png' %}" alt="Favoritos">
+                <span>Favoritos</span>
+            </a>
+            <a href="#" class="nav-item" title="Carrinho">
+                <img src="{% static 'accounts/img/cart.png' %}" alt="Carrinho">
+                <span>Carrinho</span>
+            </a>
+            <a href="#" class="nav-item" title="Histórico de Pedidos">
+                <img src="{% static 'accounts/img/history.png' %}" alt="Pedidos">
+                <span>Pedidos</span>
+            </a>
+            <a href="#" class="nav-item" title="Minha Conta">
+                <img src="{% static 'accounts/img/user.png' %}" alt="Perfil">
+                <span>{{ nome_usuario|truncatechars:10|default:"Conta" }}</span>
+            </a>
+            <a href="{% url 'marketplace:comprador_logout' %}" class="nav-item logout-link">Sair</a>
+        </nav>
+    </header>
+
+    <div class="menu-principal-links">
+        <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="menu-link active">Início</a>
+        <a href="#" class="menu-link">Ofertas</a>
+        <a href="#" class="menu-link">Novidades</a>
+    </div>
+
+    <main class="container-principal-home">
+        <section class="filtros-section">
+            <h2>Explore por Categorias</h2>
+            <div class="filtros-categorias">
+                {% if filter_categorias %}
+                    {% for categoria in filter_categorias %}
+                        {% with image_filename=categoria.id|add:".png" %}
+                            {% with image_full_path="accounts/img/"|add:image_filename %}
+                                <a href="#" class="filtro-item" data-filter-id="{{ categoria.id }}">
+                                    <img src="{% static image_full_path %}" alt="{{ categoria.nome_exibicao }}" class="filtro-imagem" onerror="this.style.display='none'; this.nextElementSibling.style.display='none'; this.closest('.filtro-item').querySelector('.filtro-icon-fallback').style.display='flex';">
+                                    <span class="filtro-icon-fallback" style="display:none;">{{ categoria.icone|default:"🛍️" }}</span>
+                                    <span class="filtro-nome-texto">{{ categoria.nome_exibicao }}</span>
+                                </a>
+                            {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <p>Nenhuma categoria disponível.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="produtos-section">
+            <h2>Destaques Deliciosos</h2>
+            <div class="produto-grid">
+                {% if product_list %}
+                    {% for produto in product_list %}
+                    <div class="produto-card">
+                        <a href="#" class="produto-link"> {# Link para detalhes do produto #}
+                            <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="produto-imagem">
+                            <div class="produto-info">
+                                <h3 class="produto-nome">{{ produto.nome }}</h3>
+                                <p class="produto-vendedor">Por: {{ produto.vendedor_nome }}</p>
+                                <p class="produto-preco">R$ {{ produto.preco }}</p>
+                            </div>
+                        </a>
+                        <button class="btn-adicionar-carrinho">Adicionar ao Carrinho</button>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Nenhum produto encontrado no momento.</p>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer-home">
+        <p>&copy; {% now "Y" %} UniMarket. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>
