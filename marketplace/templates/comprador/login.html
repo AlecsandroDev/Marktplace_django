@@ -4,25 +4,46 @@
 <head>
   <meta charset="UTF-8">
   <title>Login - Comprador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{% static 'accounts/css/login_comprador.css' %}">
 </head>
 <body>
+  <a href="{% url 'marketplace:landing_page' %}" class="botao-voltar-login" title="Voltar para a Página Inicial">
+    &lt;
+  </a>
+
   <div class="container">
     <div class="left-side">
-      <form method="POST">
+      <form method="POST" action="{% url 'marketplace:comprador_login' %}">
         {% csrf_token %}
+        <h2 class="login-title">Faça Login</h2>
+        
+        {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li{% if message.tags %} class="message-{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
         <div class="input-group">
-          <input type="text" name="username" placeholder="Insira seu Login">
+          <input type="text" name="username" placeholder="Insira seu Login (Email)" required>
         </div>
         <div class="input-group">
-          <input type="password" name="password" placeholder="Insira sua Senha">
+          <input type="password" name="password" placeholder="Insira sua Senha" required>
         </div>
-        <div class="forgot-password">Esqueci minha senha</div>
-        <button type="submit">Entrar</button>
+        
+        {# Seção "Esqueci minha senha" AGORA VISÍVEL #}
+        <div class="forgot-password-link">
+            <a href="#">Esqueci minha senha</a> {# O href="#" é um placeholder para o link futuro #}
+        </div>
+        
+        <button type="submit" class="btn-login">Entrar</button>
       </form>
-    </div>
+      
+      </div>
     <div class="right-side">
-      Seja<br>Bem<br>Vindo<br>De<br>Volta<br>as<br>Compras
+      <span class="welcome-text">Seja<br>Bem<br>Vindo<br>De<br>Volta<br>às<br>Compras!</span>
     </div>
   </div>
 </body>

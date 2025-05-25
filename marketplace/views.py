@@ -2,21 +2,34 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
 
+# ========= VIEWS PÚBLICAS / DE ENTRADA =========
+
+def landing_page(request): # MANTENHA ESTA landing_page
+    """
+    Renderiza a página inicial pública do site (o design do Figma).
+    Esta página não requer login.
+    """
+    return render(request, 'comprador/inicial.html')
+
+# ========================
+# VIEWS DO ADMIN
+# ========================
 
 def admin_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
         user = authenticate(request, username=username, password=password)
         if user is not None and user.is_staff:
             login(request, user)
-            return redirect('dashboard')
+            # ATUALIZE ESTE REDIRECT se 'dashboard' estiver em marketplace/urls.py
+            return redirect('marketplace:dashboard')
         else:
             messages.error(request, 'Credenciais inválidas ou você não tem permissão para acessar o admin.')
-            return redirect('login')
-
+            # ATUALIZE ESTE REDIRECT se 'login' for o name do admin_login em marketplace/urls.py
+            return redirect('marketplace:login')
     return render(request, "admin/login.html")
 
 
@@ -80,10 +93,11 @@ def admin_pedidos_finalizados(request):
 def admin_gerenciar_pedido_finalizado(request):
     return render(request, "admin/gerenciar_pedido_finalizado.html")
 
-@login_required
+@login_required # Geralmente, o logout do admin não precisa ser restrito a admin logado, mas ok.
 def admin_logout(request):
     logout(request)
-    return redirect('login')
+    # ATUALIZE ESTE REDIRECT se 'login' for o name do admin_login em marketplace/urls.py
+    return redirect('marketplace:login')
 
 
 # ========================
@@ -91,43 +105,48 @@ def admin_logout(request):
 # ========================
 
 def comprador_login(request):
+    if request.user.is_authenticated:
+        # ATUALIZE ESTE REDIRECT
+        return redirect('marketplace:pagina_inicial_comprador')
+
     if request.method == 'POST':
         email = request.POST.get('email')
         senha = request.POST.get('senha')
         user = authenticate(request, username=email, password=senha)
         if user is not None:
             login(request, user)
-            return redirect('pagina_inicial_comprador')
+            # ATUALIZE ESTE REDIRECT
+            return redirect('marketplace:pagina_inicial_comprador')
         else:
             messages.error(request, 'Email ou senha inválidos.')
-            return redirect('comprador_login')
+            # ATUALIZE ESTE REDIRECT
+            return redirect('marketplace:comprador_login')
     return render(request, 'comprador/login.html')
 
 
 def comprador_cadastro(request):
+    if request.user.is_authenticated:
+        # ATUALIZE ESTE REDIRECT
+        return redirect('marketplace:pagina_inicial_comprador')
+
     if request.method == 'POST':
-        nome = request.POST.get('nome')
-        email = request.POST.get('email')
-        senha = request.POST.get('senha')
-        confirmar = request.POST.get('confirmar_senha')
-
-        if senha != confirmar:
-            messages.error(request, 'As senhas não coincidem.')
-            return redirect('comprador_cadastro')
-
-        from django.contrib.auth.models import User
-        if User.objects.filter(username=email).exists():
-            messages.error(request, 'Já existe um usuário com este email.')
-            return redirect('comprador_cadastro')
-
-        user = User.objects.create_user(username=email, email=email, password=senha, first_name=nome)
-        login(request, user)
-        return redirect('pagina_inicial_comprador')
-        
-    return render(request, 'comprador/cadastro.html')
-
+        # ... (lógica de validação e criação do usuário) ...
+        # Dentro do try, após login(request, user):
+        if 'user' in locals() and user.is_authenticated: # Garante que user existe e foi logado
+             # ATUALIZE ESTE REDIRECT
+            return redirect('marketplace:pagina_inicial_comprador')
+        # Nos blocos de erro (messages.error):
+        # ATUALIZE ESTES REDIRECTS
+        # return redirect('marketplace:comprador_cadastro')
+    return render(request, 'comprador/cadastro.html') # Ver Ponto 2 abaixo
 
 @login_required
 def comprador_inicial(request):
-    return render(request, 'comprador/inicial.html')
+    return render(request, 'comprador/inicial.html') # Temporário. Idealmente, um novo HTML para home logada.
 
+@login_required
+def comprador_logout(request):
+    logout(request)
+    messages.info(request, "Você saiu da sua conta.")
+    # ESTE JÁ ESTÁ CORRETO se você adicionou app_name='marketplace'
+    return redirect('marketplace:landing_page')

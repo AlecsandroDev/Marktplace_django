@@ -24,7 +24,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path("", include("marketplace.urls")),
-    path('admin/', admin.site.urls),
+    path('django-admin/', admin.site.urls),
 ]
 
 if settings.DEBUG:
