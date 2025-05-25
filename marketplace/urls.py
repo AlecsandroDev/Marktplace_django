@@ -1,6 +1,6 @@
-from django.urls import path, reverse_lazy # Adicione reverse_lazy
+from django.urls import path, reverse_lazy
 from . import views
-from django.contrib.auth import views as auth_views # Importe as views de autenticação do Django
+from django.contrib.auth import views as auth_views
 
 app_name = 'marketplace'
 
@@ -30,34 +30,36 @@ urlpatterns = [
     path('comprador/home/', views.home_comprador, name='pagina_inicial_comprador'),
     path('comprador/logout/', views.comprador_logout, name='comprador_logout'),
 
+    # URL PARA DETALHES DO PRODUTO (NOVA)
+    path('comprador/produto/<int:produto_id>/', views.detalhes_produto, name='detalhes_produto'),
+
     # --- URLs para Recuperação de Senha do Comprador ---
     path('comprador/esqueceu-senha/',
          auth_views.PasswordResetView.as_view(
-             template_name='comprador/esquece_senha.html', # SEU ARQUIVO
-             email_template_name='comprador/esquece_senha_email_corpo.html', # Template para o corpo do email
-             subject_template_name='comprador/esquece_senha_email_assunto.txt', # Template para o assunto do email
-             success_url=reverse_lazy('marketplace:password_reset_done'), # Para onde ir após submeter o email
-             extra_email_context={'app_name': app_name} # Passa o app_name para o template do email
+             template_name='comprador/esquece_senha.html',
+             email_template_name='comprador/esquece_senha_email_corpo.html',
+             subject_template_name='comprador/esquece_senha_email_assunto.txt',
+             success_url=reverse_lazy('marketplace:password_reset_done'),
+             extra_email_context={'app_name': app_name}
          ),
-         name='password_reset_request'), # Nome para o link "Esqueci minha senha"
+         name='password_reset_request'),
 
     path('comprador/esqueceu-senha/email-enviado/',
          auth_views.PasswordResetDoneView.as_view(
-             template_name='comprador/esquece_senha_email_enviado.html' # Página de "email enviado"
+             template_name='comprador/esquece_senha_email_enviado.html'
          ),
          name='password_reset_done'),
 
-    # Esta URL recebe uidb64 e token do email
     path('comprador/resetar-senha/<uidb64>/<token>/',
          auth_views.PasswordResetConfirmView.as_view(
-             template_name='comprador/esquece_senha_nova_senha_form.html', # Formulário para nova senha
+             template_name='comprador/esquece_senha_nova_senha_form.html',
              success_url=reverse_lazy('marketplace:password_reset_complete')
          ),
          name='password_reset_confirm'),
 
     path('comprador/resetar-senha/concluido/',
          auth_views.PasswordResetCompleteView.as_view(
-             template_name='comprador/esquece_senha_completo.html' # Página de "senha redefinida"
+             template_name='comprador/esquece_senha_completo.html'
          ),
          name='password_reset_complete'),
 ]

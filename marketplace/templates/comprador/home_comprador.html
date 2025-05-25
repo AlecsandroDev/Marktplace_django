@@ -1,115 +1,70 @@
+{% extends 'comprador/base_comprador.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Início - {{ nome_usuario|default:"UniMarket" }}</title>
-    <link rel="stylesheet" href="{% static 'accounts/css/tela_home_comprador.css' %}">
-</head>
-<body>
-    <header class="topbar">
-        <div class="logo-area">
-            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="logo-text"> </a> {# UniMarket removido #}
-        </div>
-        <div class="search-area">
-            <form method="GET" action="{% url 'marketplace:pagina_inicial_comprador' %}" class="search-form"> {# Action aponta para a home para busca/filtro #}
-                <input type="search" name="q_search" placeholder="Pesquisar em UniMarket..." class="search-bar" value="{{ request.GET.q_search }}">
-                <button type="submit" class="search-button">
-                    <img src="{% static 'accounts/image/search-icon.png' %}" alt="Buscar" class="search-icon-img">
-                </button>
-            </form>
-        </div>
-        <div class="header-actions">
-            <a href="#" class="header-action-btn" title="Lista de Desejos">
-                <img src="{% static 'accounts/image/bookmark.png' %}" alt="Desejos">
-            </a>
-            <a href="#" class="header-action-btn" title="Carrinho">
-                <img src="{% static 'accounts/image/cart.png' %}" alt="Carrinho">
-            </a>
-            <div class="profile-action">
-                 <a href="#" class="header-action-btn profile-btn" title="Minha Conta"> {# Link para perfil #}
-                    <img src="{% static 'accounts/image/user.png' %}" alt="Perfil">
-                </a>
-                <a href="{% url 'marketplace:comprador_logout' %}" class="logout-text-link">Sair</a>
-            </div>
-        </div>
-    </header>
 
-    <nav class="main-navigation-tabs">
-        <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="nav-tab {% if not selected_category_id and not request.GET.q_search %}active{% endif %}">Início</a>
-        {# Adicione URLs reais para Pedidos e Perfil quando existirem #}
-        <a href="#" class="nav-tab">Pedidos</a> 
-        <a href="#" class="nav-tab">Perfil</a>
-    </nav>
+{% block title %}Início - {{ nome_usuario|default:"UniMarket" }}{% endblock title %}
 
-    <main class="container-principal-home">
-        <section class="filtros-section">
-            <h2 class="section-title">Explore por Categorias</h2>
-            <div class="filtros-categorias">
-                <a href="{% url 'marketplace:pagina_inicial_comprador' %}" 
-                   class="filtro-item {% if not selected_category_id or selected_category_id == 'todos' %}filtro-ativo{% endif %}">
-                    <div class="filtro-visual-container">
-                         <span class="filtro-icon-fallback" style="display:flex;">✨</span>
-                    </div>
-                    <span class="filtro-nome-texto">Todos</span>
-                </a>
-                {% if filter_categorias %}
-                    {% for categoria in filter_categorias %}
-                        {% with image_filename=categoria.id|add:".png" %}
-                            {% with image_full_path="accounts/image/"|add:image_filename %}
-                                <a href="{% url 'marketplace:pagina_inicial_comprador' %}?categoria={{ categoria.id }}" 
-                                   class="filtro-item {% if categoria.id == selected_category_id %}filtro-ativo{% endif %}" 
-                                   data-filter-id="{{ categoria.id }}">
-                                    <div class="filtro-visual-container">
-                                        <img src="{% static image_full_path %}" alt="{{ categoria.nome_exibicao }}" class="filtro-imagem" 
-                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                        <span class="filtro-icon-fallback" style="display:none;">{{ categoria.icone|default:"🛍️" }}</span>
-                                    </div>
-                                    <span class="filtro-nome-texto">{{ categoria.nome_exibicao }}</span>
-                                </a>
-                            {% endwith %}
+{% block nav_inicio_active %}active{% endblock %} {# Define a aba Início como ativa #}
+
+{% block content %}
+    <section class="filtros-section">
+        <h2 class="section-title">Explore por Categorias</h2>
+        <div class="filtros-categorias">
+            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" 
+               class="filtro-item {% if not selected_category_id or selected_category_id == 'todos' %}filtro-ativo{% endif %}">
+                <div class="filtro-visual-container">
+                     <span class="filtro-icon-fallback" style="display:flex;">✨</span>
+                </div>
+                <span class="filtro-nome-texto">Todos</span>
+            </a>
+            {% if filter_categorias %}
+                {% for categoria in filter_categorias %}
+                    {% with image_filename=categoria.id|add:".png" %}
+                        {% with image_full_path="accounts/image/"|add:image_filename %}
+                            <a href="{% url 'marketplace:pagina_inicial_comprador' %}?categoria={{ categoria.id }}" 
+                               class="filtro-item {% if categoria.id == selected_category_id %}filtro-ativo{% endif %}" 
+                               data-filter-id="{{ categoria.id }}">
+                                <div class="filtro-visual-container">
+                                    <img src="{% static image_full_path %}" alt="{{ categoria.nome_exibicao }}" class="filtro-imagem" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <span class="filtro-icon-fallback" style="display:none;">{{ categoria.icone|default:"🛍️" }}</span>
+                                </div>
+                                <span class="filtro-nome-texto">{{ categoria.nome_exibicao }}</span>
+                            </a>
                         {% endwith %}
-                    {% endfor %}
-                {% else %}
-                    <p>Nenhuma categoria disponível.</p>
-                {% endif %}
-            </div>
-        </section>
+                    {% endwith %}
+                {% endfor %}
+            {% else %}
+                <p>Nenhuma categoria disponível.</p>
+            {% endif %}
+        </div>
+    </section>
 
-        <section class="produtos-section">
-            <h2 class="section-title">Produtos Disponíveis</h2>
-            <div class="produto-grid">
-                {% if product_list %}
-                    {% for produto in product_list %}
-                    <div class="produto-card">
-                        <a href="#" class="produto-link"> {# Futuramente: {% url 'marketplace:detalhe_produto' produto.id %} #}
-                            {% if produto.imagem_arquivo_local %}
-                                <img src="{% static 'accounts/image/'|add:produto.imagem_arquivo_local %}" alt="{{ produto.nome }}" class="produto-imagem">
-                            {% elif produto.imagem_url %}
-                                <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="produto-imagem">
-                            {% else %}
-                                <img src="{% static 'accounts/image/placeholder_produto.png' %}" alt="{{ produto.nome }}" class="produto-imagem">
-                            {% endif %}
-                            <div class="produto-info">
-                                <h3 class="produto-nome">{{ produto.nome }}</h3>
-                                <p class="produto-vendedor">Por: {{ produto.vendedor_nome }}</p>
-                                <p class="produto-preco">R$ {{ produto.preco }}</p>
-                            </div>
-                        </a>
-                        <button class="btn-adicionar-carrinho">Adicionar ao Carrinho</button>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p>Nenhum produto encontrado para esta seleção. Tente outros filtros!</p> {# Mensagem mais específica #}
-                {% endif %}
-            </div>
-        </section>
-    </main>
-
-    <footer class="main-footer-home">
-        <p>&copy; {% now "Y" %} UniMarket. Todos os direitos reservados.</p>
-    </footer>
-
-</body>
-</html>
+    <section class="produtos-section">
+        <h2 class="section-title">Produtos Disponíveis</h2>
+        <div class="produto-grid">
+            {% if product_list %}
+                {% for produto in product_list %}
+                <div class="produto-card">
+                    <a href="{% url 'marketplace:detalhes_produto' produto_id=produto.id %}" class="produto-link">
+                        {% if produto.imagem_arquivo_local %}
+                            <img src="{% static 'accounts/image/'|add:produto.imagem_arquivo_local %}" alt="{{ produto.nome }}" class="produto-imagem">
+                        {% elif produto.imagem_url %}
+                            <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="produto-imagem">
+                        {% else %}
+                            <img src="{% static 'accounts/image/placeholder_produto.png' %}" alt="{{ produto.nome }}" class="produto-imagem">
+                        {% endif %}
+                        <div class="produto-info">
+                            <h3 class="produto-nome">{{ produto.nome }}</h3>
+                            <p class="produto-vendedor">Por: {{ produto.vendedor_nome }}</p>
+                            <p class="produto-preco">R$ {{ produto.preco }}</p>
+                        </div>
+                    </a>
+                    <button class="btn-adicionar-carrinho">Adicionar ao Carrinho</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Nenhum produto encontrado para esta seleção. Tente outros filtros!</p>
+            {% endif %}
+        </div>
+    </section>
+{% endblock content %}

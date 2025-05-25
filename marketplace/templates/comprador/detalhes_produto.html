@@ -1,0 +1,111 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}{{ produto.nome }} - UniMarket{% endblock title %}
+
+{% block extra_css %}
+    {# Link para o CSS específico desta página, se for diferente do da home #}
+    <link rel="stylesheet" href="{% static 'accounts/css/detalhes_produto_comprador.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+    <div class="produto-detalhe-wrapper"> {# Wrapper para aplicar estilos específicos da página de detalhes se necessário #}
+        {% if produto %}
+            <div class="produto-breadcrumb">
+                <a href="{% url 'marketplace:pagina_inicial_comprador' %}">Início</a> &gt; 
+                {# Futuramente: <a href="#">{{ produto.categoria_id|capfirst }}</a> &gt; #}
+                <span>{{ produto.nome }}</span>
+            </div>
+
+            <h1>{{ produto.nome }}</h1>
+            
+            <div class="produto-detalhe-layout">
+                <div class="produto-imagem-coluna">
+                    {% if produto.imagem_arquivo_local %}
+                        <img src="{% static 'accounts/image/'|add:produto.imagem_arquivo_local %}" alt="{{ produto.nome }}" class="imagem-principal-produto">
+                    {% elif produto.imagem_url %}
+                        <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="imagem-principal-produto">
+                    {% else %}
+                        <img src="{% static 'accounts/image/placeholder_produto_grande.png' %}" alt="{{ produto.nome }}" class="imagem-principal-produto">
+                    {% endif %}
+                </div>
+
+                <div class="produto-info-coluna">
+                    <p class="detalhe-vendedor">Vendido por: <strong>{{ produto.vendedor_nome }}</strong></p>
+                    <p class="detalhe-preco">R$ {{ produto.preco }}</p>
+                    
+                    <form action="#" method="POST" class="compra-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                        <div class="compra-acoes">
+                            <div class="quantidade-grupo">
+                                <label for="quantidade-{{ produto.id }}">Quantidade:</label>
+                                <input type="number" id="quantidade-{{ produto.id }}" name="quantidade" value="1" min="1" class="input-quantidade">
+                            </div>
+                            <button type="submit" class="btn-comprar-detalhes">Adicionar ao Carrinho</button>
+                        </div>
+                    </form>
+                    
+                    <div class="produto-descricao-detalhada">
+                        <h3>Descrição do Produto</h3>
+                        <p>{{ produto.descricao_longa|linebreaksbr }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {# --- SEÇÃO PARA COMENTÁRIOS E AVALIAÇÕES (COMEÇO) --- #}
+            <section class="reviews-section">
+                <h2 class="section-title-reviews">Avaliações e Comentários</h2>
+                
+                {# Formulário para novo comentário/avaliação #}
+                {% if user.is_authenticated %} {# Só mostra o formulário se o usuário estiver logado #}
+                <div class="review-form-container">
+                    <h3>Deixe sua avaliação:</h3>
+                    <form method="POST" action="#"> {# Action para view de submissão de review #}
+                        {% csrf_token %}
+                        <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                        <div class="rating-stars">
+                            <span>Sua nota:</span>
+                            {# Inputs de estrela (CSS fará parecer estrelas) #}
+                            <div class="star-input">
+                                <input type="radio" id="star5-{{ produto.id }}" name="rating" value="5"><label for="star5-{{ produto.id }}" title="5 estrelas">☆</label>
+                                <input type="radio" id="star4-{{ produto.id }}" name="rating" value="4"><label for="star4-{{ produto.id }}" title="4 estrelas">☆</label>
+                                <input type="radio" id="star3-{{ produto.id }}" name="rating" value="3"><label for="star3-{{ produto.id }}" title="3 estrelas">☆</label>
+                                <input type="radio" id="star2-{{ produto.id }}" name="rating" value="2"><label for="star2-{{ produto.id }}" title="2 estrelas">☆</label>
+                                <input type="radio" id="star1-{{ produto.id }}" name="rating" value="1"><label for="star1-{{ produto.id }}" title="1 estrela">☆</label>
+                            </div>
+                        </div>
+                        <div class="comment-field">
+                            <label for="comment-text-{{ produto.id }}">Seu comentário:</label>
+                            <textarea id="comment-text-{{ produto.id }}" name="comment" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit-review">Enviar Avaliação</button>
+                    </form>
+                </div>
+                {% else %}
+                    <p><a href="{% url 'marketplace:comprador_login' %}?next={{ request.path }}">Faça login</a> para deixar uma avaliação.</p>
+                {% endif %}
+
+                {# Lista de comentários/avaliações existentes #}
+                <div class="existing-reviews">
+                    <h3>O que outros compradores disseram:</h3>
+                    {% if produto.reviews %} {# Supondo que 'produto.reviews' seja uma lista de reviews no contexto #}
+                        {% for review in produto.reviews %}
+                            <div class="review-item">
+                                <p class="review-author"><strong>{{ review.user_name }}</strong> - <span class="review-rating">{% for i in ""|center:review.rating %}★{% endfor %}{% for i in ""|center:review.empty_stars %}☆{% endfor %}</span></p>
+                                <p class="review-text">{{ review.comment }}</p>
+                                <p class="review-date"><small>{{ review.created_at|date:"d/m/Y H:i" }}</small></p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Este produto ainda não tem avaliações. Seja o primeiro!</p>
+                    {% endif %}
+                </div>
+            </section>
+            {# --- SEÇÃO PARA COMENTÁRIOS E AVALIAÇÕES (FIM) --- #}
+
+        {% else %}
+            <p>Produto não encontrado.</p>
+        {% endif %}
+    </div>
+{% endblock content %}

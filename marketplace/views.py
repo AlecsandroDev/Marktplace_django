@@ -1,24 +1,41 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-# Se for usar os modelos de Produto e Categoria na view home_comprador, importe-os aqui quando estiverem prontos:
+from django.http import Http404
+
+# Se for usar os modelos de Produto e Categoria, importe-os aqui quando estiverem prontos:
 # from .models import Produto, Categoria # Exemplo
 
-# ========= VIEWS PÚBLICAS / DE ENTRADA =========
 
+# Dados de placeholder para produtos (nível do módulo)
+_placeholder_all_products = [
+    {'id': 1, 'nome': 'Bolo de Cenoura Delicioso', 'preco': '22.50', 'vendedor_nome': 'Doceria da Maria',
+     'imagem_arquivo_local': 'bolo_de_cenoura.png', 'categoria_id': 'doces',
+     'descricao_longa': 'Um delicioso e fofinho bolo de cenoura com cobertura de chocolate artesanal, feito com ingredientes frescos e muito carinho. Perfeito para o seu café da tarde ou como sobremesa especial.'},
+    {'id': 2, 'nome': 'Coxinha Crocante (Unidade)', 'preco': '7.00', 'vendedor_nome': 'Salgados Express',
+     'imagem_arquivo_local': 'coxinha.png', 'categoria_id': 'salgados',
+     'descricao_longa': 'Nossa famosa coxinha de frango com catupiry, com massa crocante por fora e recheio cremoso e abundante por dentro. Frita na hora para você!'},
+    {'id': 4, 'nome': 'PF Executivo - Frango Grelhado', 'preco': '28.00', 'vendedor_nome': 'Restaurante Sabor Caseiro',
+     'imagem_arquivo_local': 'frango_grelhado.png', 'categoria_id': 'pratos_prontos',
+     'descricao_longa': 'Prato feito completo com frango grelhado suculento, arroz branco soltinho, feijão caseiro, batata frita crocante e uma salada fresca de alface e tomate.'},
+    {'id': 5, 'nome': 'Brigadeiro Gourmet (Unidade)', 'preco': '4.50', 'vendedor_nome': 'Doceria da Maria',
+     'imagem_arquivo_local': 'brigadeiro.png', 'categoria_id': 'doces',
+     'descricao_longa': 'Brigadeiro gourmet feito com chocolate nobre e granulado de alta qualidade. Uma explosão de sabor que derrete na boca.'},
+    {'id': 6, 'nome': 'Mini Pizza Calabresa', 'preco': '8.00', 'vendedor_nome': 'Pizzaria Universitária',
+     'imagem_arquivo_local': 'mini_pizza_calabresa.png', 'categoria_id': 'lanchinhos',
+     'descricao_longa': 'Mini pizza individual com massa artesanal, molho de tomate fresco, calabresa fatiada de primeira e queijo mussarela derretido. Ideal para um lanche rápido!'},
+    {'id': 7, 'nome': 'Empada de Palmito', 'preco': '6.50', 'vendedor_nome': 'Salgados da Tia',
+     'imagem_arquivo_local': 'empada_de_palmito.png', 'categoria_id': 'salgados',
+     'descricao_longa': 'Delicada empada de palmito com massa que desmancha na boca e recheio cremoso. Uma ótima opção para qualquer hora do dia.'},
+]
+
+# ========= VIEWS PÚBLICAS / DE ENTRADA =========
 def landing_page(request):
-    """
-    Renderiza a página inicial pública do site.
-    Esta página não requer login.
-    """
     return render(request, 'comprador/inicial.html')
 
-# ========================
-# VIEWS DO ADMIN
-# ========================
-
+# ========= VIEWS DO ADMIN ==========
 def admin_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -29,7 +46,7 @@ def admin_login(request):
             return redirect('marketplace:dashboard')
         else:
             messages.error(request, 'Credenciais inválidas ou você não tem permissão para acessar o admin.')
-            return redirect('marketplace:login') # 'login' aqui é o name da URL do admin_login
+            return redirect('marketplace:login')
     return render(request, "admin/login.html")
 
 @login_required
@@ -104,9 +121,7 @@ def admin_logout(request):
 def comprador_login(request):
     if request.user.is_authenticated and not request.user.is_staff:
         return redirect('marketplace:pagina_inicial_comprador')
-
     if request.method == 'POST':
-        # ... (lógica de login que você já tem e está funcionando) ...
         email = request.POST.get('username')
         senha = request.POST.get('password')
         user = authenticate(request, username=email, password=senha)
@@ -122,13 +137,10 @@ def comprador_login(request):
             return redirect('marketplace:comprador_login')
     return render(request, 'comprador/login.html')
 
-
 def comprador_cadastro(request):
     if request.user.is_authenticated and not request.user.is_staff:
         return redirect('marketplace:pagina_inicial_comprador')
-
     if request.method == 'POST':
-        # ... (lógica de cadastro que você já tem e está funcionando com todos os campos) ...
         nome = request.POST.get('nome')
         idade = request.POST.get('idade')
         cpf = request.POST.get('cpf')
@@ -159,15 +171,12 @@ def comprador_cadastro(request):
             user = User.objects.create_user(username=email, email=email, password=senha)
             user.first_name = nome
             user.save()
-            # Lógica para salvar dados extras (idade, cpf, etc.) em um UserProfile aqui
-            # print(f"Dados recebidos: Idade={idade_int}, CPF={cpf}, Curso={curso}, RA={ra}. Lógica de salvamento pendente.")
             login(request, user)
             messages.success(request, 'Cadastro realizado com sucesso! Você já está logado.')
             return redirect('marketplace:pagina_inicial_comprador')
         except Exception as e:
             messages.error(request, 'Ocorreu um erro inesperado durante o cadastro. Tente novamente.')
             return redirect('marketplace:comprador_cadastro')
-            
     return render(request, 'comprador/cadastro.html')
 
 @login_required
@@ -186,26 +195,11 @@ def home_comprador(request):
         {'id': 'salgados', 'nome_exibicao': 'Salgados', 'icone': '🥐'},
     ]
 
-    all_products = [
-        {'id': 1, 'nome': 'Bolo de Cenoura Delicioso', 'preco': '22.50', 'vendedor_nome': 'Doceria da Maria', 
-         'imagem_arquivo_local': 'bolo_de_cenoura.png', 'categoria_id': 'doces'},
-        {'id': 2, 'nome': 'Coxinha Crocante (Unidade)', 'preco': '7.00', 'vendedor_nome': 'Salgados Express',
-         'imagem_arquivo_local': 'coxinha.png', 'categoria_id': 'salgados'},
-        {'id': 4, 'nome': 'PF Executivo - Frango Grelhado', 'preco': '28.00', 'vendedor_nome': 'Restaurante Sabor Caseiro', 
-         'imagem_arquivo_local': 'frango_grelhado.png', 'categoria_id': 'pratos_prontos'},
-        {'id': 5, 'nome': 'Brigadeiro Gourmet (Unidade)', 'preco': '4.50', 'vendedor_nome': 'Doceria da Maria', 
-         'imagem_arquivo_local': 'brigadeiro.png', 'categoria_id': 'doces'},
-        {'id': 6, 'nome': 'Mini Pizza Calabresa', 'preco': '8.00', 'vendedor_nome': 'Pizzaria Universitária',
-         'imagem_arquivo_local': 'mini_pizza_calabresa.png', 'categoria_id': 'lanchinhos'},  
-        {'id': 7, 'nome': 'Empada de Palmito', 'preco': '6.50', 'vendedor_nome': 'Salgados da Tia',
-         'imagem_arquivo_local': 'empada_de_palmito.png', 'categoria_id': 'salgados'},     
-    ]
-
     selected_category_id = request.GET.get('categoria')
-    product_list = all_products
+    product_list = _placeholder_all_products # Usa a lista definida no início do arquivo
 
-    if selected_category_id and selected_category_id != 'todos': # Adicionado 'todos' como condição para não filtrar
-        product_list = [p for p in all_products if p.get('categoria_id') == selected_category_id]
+    if selected_category_id and selected_category_id != 'todos':
+        product_list = [p for p in _placeholder_all_products if p.get('categoria_id') == selected_category_id]
     
     context = {
         'nome_usuario': nome_usuario,
@@ -214,6 +208,31 @@ def home_comprador(request):
         'selected_category_id': selected_category_id,
     }
     return render(request, 'comprador/home_comprador.html', context)
+
+# NOVA VIEW PARA DETALHES DO PRODUTO
+@login_required # Mantenha ou remova @login_required conforme sua necessidade para esta página
+def detalhes_produto(request, produto_id):
+    produto_encontrado = None
+    for p in _placeholder_all_products: # Procura na lista de exemplo
+        if p.get('id') == produto_id:
+            produto_encontrado = p
+            break
+    
+    if not produto_encontrado:
+        # Quando tiver modelos, use:
+        # from .models import Produto
+        # produto_encontrado = get_object_or_404(Produto, pk=produto_id, disponivel=True)
+        raise Http404("Produto não encontrado ou indisponível.")
+
+    # Aqui você pode adicionar lógica para buscar produtos relacionados, avaliações, etc.
+    # produtos_relacionados = [prod for prod in _placeholder_all_products if prod.get('categoria_id') == produto_encontrado.get('categoria_id') and prod.get('id') != produto_id][:3] # Exemplo
+
+    context = {
+        'produto': produto_encontrado,
+        'nome_usuario': request.user.first_name or request.user.username if request.user.is_authenticated else None,
+        # 'produtos_relacionados': produtos_relacionados, # Exemplo
+    }
+    return render(request, 'comprador/detalhes_produto.html', context)
 
 @login_required
 def comprador_logout(request):

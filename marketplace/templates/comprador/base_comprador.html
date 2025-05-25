@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}UniMarket{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/tela_home_comprador.css' %}">
+    {% block extra_css %}{% endblock extra_css %} {# Bloco para CSS específico da página #}
+</head>
+<body>
+    <header class="topbar">
+        <div class="logo-area">
+            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="logo-text"> </a> {# UniMarket removido, pode ser imagem #}
+        </div>
+        <div class="search-area">
+            <form method="GET" action="{% url 'marketplace:pagina_inicial_comprador' %}" class="search-form">
+                <input type="search" name="q_search" placeholder="Pesquisar em UniMarket..." class="search-bar" value="{{ request.GET.q_search }}">
+                <button type="submit" class="search-button">
+                    <img src="{% static 'accounts/image/search-icon.png' %}" alt="Buscar" class="search-icon-img">
+                </button>
+            </form>
+        </div>
+        <div class="header-actions">
+            <a href="#" class="header-action-btn" title="Lista de Desejos">
+                <img src="{% static 'accounts/image/bookmark.png' %}" alt="Desejos">
+            </a>
+            <a href="#" class="header-action-btn" title="Carrinho">
+                <img src="{% static 'accounts/image/cart.png' %}" alt="Carrinho">
+            </a>
+            <div class="profile-action">
+                 <a href="#" class="header-action-btn profile-btn" title="Minha Conta">
+                    <img src="{% static 'accounts/image/user.png' %}" alt="Perfil">
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'marketplace:comprador_logout' %}" class="logout-text-link">Sair</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <nav class="main-navigation-tabs">
+        <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="nav-tab {% block nav_inicio_active %}{% endblock %}">Início</a>
+        <a href="#" class="nav-tab {% block nav_pedidos_active %}{% endblock %}">Pedidos</a>
+        <a href="#" class="nav-tab {% block nav_perfil_active %}{% endblock %}">Perfil</a>
+    </nav>
+
+    <main class="container-principal-home"> {# Classe genérica para o container do conteúdo principal #}
+        {% block content %}
+        {# O conteúdo específico de cada página virá aqui #}
+        {% endblock content %}
+    </main>
+
+    <footer class="main-footer-home">
+        <p>&copy; {% now "Y" %} UniMarket. Todos os direitos reservados.</p>
+    </footer>
+
+    {% block extra_js %}{% endblock extra_js %} {# Bloco para JS específico da página #}
+</body>
+</html>
