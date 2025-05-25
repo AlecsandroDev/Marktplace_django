@@ -6,6 +6,7 @@ app_name = 'marketplace'
 
 urlpatterns = [
     path('', views.landing_page, name='landing_page'),
+    # Admin URLs
     path('admin/', views.admin_login, name='login'),
     path('admin/dashboard/', views.admin_dashboard, name='dashboard'),
     path('admin/anuncios/', views.admin_anuncios, name='anuncios'),
@@ -21,13 +22,20 @@ urlpatterns = [
     path('admin/gerenciar_pedido_finalizado/', views.admin_gerenciar_pedido_finalizado, name='gerenciar_pedido_finalizado'),
     path('admin/logout/', views.admin_logout, name='admin_logout'),
 
+    # Comprador URLs
     path('comprador/login/', views.comprador_login, name='comprador_login'),
     path('comprador/cadastro/', views.comprador_cadastro, name='comprador_cadastro'),
     path('comprador/home/', views.home_comprador, name='pagina_inicial_comprador'),
     path('comprador/logout/', views.comprador_logout, name='comprador_logout'),
     path('comprador/produto/<int:produto_id>/', views.detalhes_produto, name='detalhes_produto'),
     path('comprador/busca/', views.pagina_busca_produto, name='pagina_busca_produto'),
+    
+    # Lista de Desejos URLs
+    path('comprador/lista-desejos/', views.lista_desejos, name='lista_desejos'),
+    path('comprador/desejos/adicionar/<int:produto_id>/', views.adicionar_aos_desejos, name='adicionar_aos_desejos'),
+    path('comprador/desejos/remover/<int:produto_id>/', views.remover_dos_desejos, name='remover_dos_desejos'),
 
+    # Password Reset URLs
     path('comprador/esqueceu-senha/',
          auth_views.PasswordResetView.as_view(
              template_name='comprador/esquece_senha.html',

@@ -10,9 +10,14 @@
 {% block content %}
     <div class="produto-detalhe-wrapper">
         {% if produto %}
-            <div class="produto-breadcrumb">
-                <a href="{% url 'marketplace:pagina_inicial_comprador' %}">Início</a> &gt; 
-                <span>{{ produto.nome }}</span>
+            <div class="contextual-nav">
+                <a href="{{ request.META.HTTP_REFERER|default:request.build_absolute_uri }}" class="link-voltar-contextual">
+                    <span class="seta-voltar">&larr;</span> Voltar
+                </a>
+                <div class="produto-breadcrumb">
+                    <a href="{% url 'marketplace:pagina_inicial_comprador' %}">Início</a> &gt; 
+                    <span>{{ produto.nome }}</span>
+                </div>
             </div>
 
             <h1>{{ produto.nome }}</h1>
@@ -32,17 +37,31 @@
                     <p class="detalhe-vendedor">Vendido por: <strong>{{ produto.vendedor_nome }}</strong></p>
                     <p class="detalhe-preco">R$ {{ produto.preco }}</p>
                     
-                    <form action="#" method="POST" class="compra-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="produto_id" value="{{ produto.id }}">
-                        <div class="compra-acoes">
+                    {# Container principal para todas as ações de compra e desejos #}
+                    <div class="produto-acoes-bloco">
+                        <form action="#" method="POST" class="form-add-carrinho">
+                            {% csrf_token %}
+                            <input type="hidden" name="produto_id" value="{{ produto.id }}">
                             <div class="quantidade-grupo">
-                                <label for="quantidade-{{ produto.id }}">Quantidade:</label>
+                                <label for="quantidade-{{ produto.id }}">Qtd:</label>
                                 <input type="number" id="quantidade-{{ produto.id }}" name="quantidade" value="1" min="1" class="input-quantidade">
                             </div>
                             <button type="submit" class="btn-comprar-detalhes">Adicionar ao Carrinho</button>
-                        </div>
-                    </form>
+                        </form>
+                        
+                        {# Botão de Desejos ao lado #}
+                        {% if produto.is_favorited %}
+                            <a href="{% url 'marketplace:remover_dos_desejos' produto_id=produto.id %}" class="btn-wishlist-detalhe active" title="Remover dos Desejos">
+                                <img src="{% static 'accounts/image/bookmark_active.png' %}" alt="Favorito"> 
+                                <span>Remover dos Desejos</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'marketplace:adicionar_aos_desejos' produto_id=produto.id %}" class="btn-wishlist-detalhe" title="Adicionar aos Desejos">
+                                <img src="{% static 'accounts/image/bookmark.png' %}" alt="Não Favorito">
+                                <span>Adicionar aos Desejos</span>
+                            </a>
+                        {% endif %}
+                    </div>
                     
                     <div class="produto-descricao-detalhada">
                         <h3>Descrição do Produto</h3>
@@ -56,7 +75,7 @@
                 {% if user.is_authenticated %}
                 <div class="review-form-container">
                     <h3>Deixe sua avaliação:</h3>
-                    <form method="POST" action="#">
+                    <form method="POST" action="#"> {# Futuramente: action para view de submissão de review #}
                         {% csrf_token %}
                         <input type="hidden" name="produto_id" value="{{ produto.id }}">
                         <div class="rating-stars">
@@ -79,10 +98,8 @@
                 {% else %}
                     <p><a href="{% url 'marketplace:comprador_login' %}?next={{ request.path }}">Faça login</a> para deixar uma avaliação.</p>
                 {% endif %}
-
                 <div class="existing-reviews">
                     <h3>O que outros compradores disseram:</h3>
-                    {# Exemplo de como listar reviews - você precisará passar 'produto.reviews' da view #}
                     {% if produto.reviews %} 
                         {% for review in produto.reviews %}
                             <div class="review-item">
@@ -97,13 +114,12 @@
                 </div>
             </section>
         {% else %}
-            <p>Produto não encontrado.</p>
+             <div class="no-results-container" style="text-align:center; padding: 30px;">
+                <p class="no-results-message">Produto não encontrado.</p>
+                <div class="no-results-actions">
+                    <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-voltar-busca">Voltar para Início</a>
+                </div>
+            </div>
         {% endif %}
-    </div>
-
-    <div class="acoes-pagina-detalhes" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
-        <a href="{{ request.META.HTTP_REFERER|default:request.build_absolute_uri }}" class="btn-link-secundario">Voltar à página anterior</a>
-
-        {# <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-link-secundario">Continuar Comprando</a> #}
     </div>
 {% endblock content %}

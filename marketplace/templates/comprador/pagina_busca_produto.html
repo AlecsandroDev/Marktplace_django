@@ -26,14 +26,14 @@
     <section class="filtros-section">
         <h2 class="section-title-minor">Filtrar resultados por Categoria:</h2>
         <div class="filtros-categorias">
-            <a href="{% url 'marketplace:pagina_busca_produto' %}?q_search={{ search_query|urlencode }}" 
+             <a href="{% url 'marketplace:pagina_busca_produto' %}?q_search={{ search_query|urlencode }}" 
                class="filtro-item {% if not selected_category_id or selected_category_id == 'todos' %}filtro-ativo{% endif %}">
                 <div class="filtro-visual-container">
                      <span class="filtro-icon-fallback" style="display:flex;">✨</span>
                 </div>
                 <span class="filtro-nome-texto">Todas</span>
             </a>
-            {% if filter_categorias %} {# Usa 'filter_categorias' do contexto #}
+            {% if filter_categorias %}
                 {% for categoria in filter_categorias %}
                     {% with image_filename=categoria.id|add:".png" %}
                         {% with image_full_path="accounts/image/"|add:image_filename %}
@@ -77,14 +77,22 @@
                         </div>
                     </a>
                     <div class="produto-list-actions">
-                        <button class="btn-adicionar-carrinho-lista">Adicionar</button>
+                        <button class="btn-adicionar-carrinho-lista">Adicionar ao Carrinho</button>
+                        {% if produto.is_favorited %}
+                            <a href="{% url 'marketplace:remover_dos_desejos' produto_id=produto.id %}" class="btn-wishlist list-action active" title="Remover dos Desejos">
+                                <img src="{% static 'accounts/image/bookmark_active.png' %}" alt="Favorito">
+                            </a>
+                        {% else %}
+                            <a href="{% url 'marketplace:adicionar_aos_desejos' produto_id=produto.id %}" class="btn-wishlist list-action" title="Adicionar aos Desejos">
+                                <img src="{% static 'accounts/image/bookmark.png' %}" alt="Não Favorito">
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
             </div>
         {% elif search_query %}
             <div class="no-results-container">
-                {# LINHA CORRIGIDA para usar selected_category_name do contexto #}
                 <p class="no-results-message">Nenhum produto encontrado para "<strong>{{ search_query }}</strong>"{% if selected_category_id and selected_category_id != 'todos' and selected_category_name %} na categoria <strong>{{ selected_category_name }}</strong>{% endif %}.</p>
                 <div class="no-results-actions">
                     <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-voltar-busca">Voltar para Início</a>

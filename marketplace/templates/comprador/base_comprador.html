@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}UniMarket{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'accounts/css/tela_home_comprador.css' %}"> {# CSS Principal #}
+    <link rel="stylesheet" href="{% static 'accounts/css/tela_home_comprador.css' %}">
     {% block extra_css %}{% endblock extra_css %}
 </head>
 <body>
@@ -14,7 +14,6 @@
             <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="logo-text"> </a>
         </div>
         <div class="search-area">
-            {# ACTION DO FORMULÁRIO ATUALIZADO #}
             <form method="GET" action="{% url 'marketplace:pagina_busca_produto' %}" class="search-form">
                 <input type="search" name="q_search" placeholder="Pesquisar em UniMarket..." class="search-bar" value="{{ request.GET.q_search }}">
                 <button type="submit" class="search-button">
@@ -23,14 +22,16 @@
             </form>
         </div>
         <div class="header-actions">
-            <a href="#" class="header-action-btn" title="Lista de Desejos">
+            <a href="{% url 'marketplace:lista_desejos' %}" 
+               class="header-action-btn {% if request.resolver_match.url_name == 'lista_desejos' %}active-icon{% endif %}" 
+               title="Lista de Desejos">
                 <img src="{% static 'accounts/image/bookmark.png' %}" alt="Desejos">
             </a>
-            <a href="#" class="header-action-btn" title="Carrinho">
+            <a href="#" class="header-action-btn" title="Carrinho"> 
                 <img src="{% static 'accounts/image/cart.png' %}" alt="Carrinho">
             </a>
             <div class="profile-action">
-                 <a href="#" class="header-action-btn profile-btn" title="Minha Conta"> {# Link para perfil #}
+                 <a href="#" class="header-action-btn profile-btn" title="Minha Conta"> 
                     <img src="{% static 'accounts/image/user.png' %}" alt="Perfil">
                 </a>
                 {% if user.is_authenticated %}
@@ -42,11 +43,19 @@
 
     <nav class="main-navigation-tabs">
         <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="nav-tab {% block nav_inicio_active %}{% if request.resolver_match.url_name == 'pagina_inicial_comprador' and not request.GET.categoria and not request.GET.q_search %}active{% endif %}{% endblock %}">Início</a>
-        <a href="#" class="nav-tab {% block nav_pedidos_active %}{% endblock %}">Pedidos</a>
-        <a href="#" class="nav-tab {% block nav_perfil_active %}{% endblock %}">Perfil</a>
+        <a href="#" class="nav-tab {% block nav_pedidos_active %}{% endblock %}">Pedidos</a> 
+        {# A aba Perfil só fica ativa se a URL for especificamente a de perfil (que ainda não criamos) #}
+        <a href="#" class="nav-tab {% block nav_perfil_active %}{% if request.resolver_match.url_name == 'sua_url_de_perfil_aqui' %}active{% endif %}{% endblock %}">Perfil</a>
     </nav>
 
     <main class="container-principal-home">
+        {% if messages %}
+            <ul class="messages-global">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="message-{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% block content %}
         {% endblock content %}
     </main>

@@ -59,7 +59,18 @@
                             <p class="produto-preco">R$ {{ produto.preco }}</p>
                         </div>
                     </a>
-                    <button class="btn-adicionar-carrinho">Adicionar ao Carrinho</button>
+                    <div class="produto-card-actions">
+                        <button class="btn-adicionar-carrinho">Adicionar ao Carrinho</button>
+                        {% if produto.is_favorited %}
+                            <a href="{% url 'marketplace:remover_dos_desejos' produto_id=produto.id %}" class="btn-wishlist card-action active" title="Remover dos Desejos">
+                                <img src="{% static 'accounts/image/bookmark_active.png' %}" alt="Favorito">
+                            </a>
+                        {% else %}
+                            <a href="{% url 'marketplace:adicionar_aos_desejos' produto_id=produto.id %}" class="btn-wishlist card-action" title="Adicionar aos Desejos">
+                                <img src="{% static 'accounts/image/bookmark.png' %}" alt="Não Favorito">
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}
