@@ -122,32 +122,37 @@ body {
     color: white;
 }
 
-/* Conteúdo Principal */
-.container-principal-home {
-    max-width: 1200px; margin: 25px auto; padding: 0 15px;
+/* Conteúdo Principal (usado pelo base_comprador.html) */
+.container-principal-home { /* Esta classe é usada no <main> do base_comprador.html */
+    max-width: 1200px; 
+    margin: 25px auto; 
+    padding: 0 15px;
 }
-.section-title {
-    font-size: 1.8em; color: #333; margin-bottom: 25px;
-    text-align: center; font-weight: 600;
+.section-title { /* Título genérico para seções dentro do container-principal-home */
+    font-size: 1.8em; 
+    color: #333; 
+    margin-bottom: 25px;
+    text-align: center; 
+    font-weight: 600;
 }
 
-/* ========= Seção de Filtros - TAMANHOS AUMENTADOS ========= */
+/* Seção de Filtros */
 .filtros-section {
     margin-bottom: 25px;
-    padding: 20px;
+    padding-top: 20px; /* Adicionado padding no topo da seção de filtros */
 }
 .filtros-categorias {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 25px; /* Aumentado um pouco o espaço entre os filtros */
+    gap: 25px;
 }
 .filtro-item {
     background-color: rgba(255, 255, 255, 0.85);
     border-radius: 12px;
     border: 1px solid rgba(224, 224, 224, 0.7);
-    padding: 20px 15px; /* Aumentado padding vertical */
-    width: 180px; /* LARGURA DO CARD AUMENTADA */
+    padding: 20px 15px;
+    width: 180px;
     text-align: center;
     text-decoration: none;
     color: #333;
@@ -157,15 +162,15 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 220px; /* ALTURA MÍNIMA DO CARD AUMENTADA */
+    min-height: 220px;
 }
 .filtro-item:hover:not(.filtro-ativo) {
     transform: translateY(-5px); box-shadow: 0 5px 12px rgba(0,0,0,0.1);
 }
 
 .filtro-visual-container {
-    width: 110px;  /* AUMENTADO */
-    height: 110px; /* AUMENTADO */
+    width: 110px;
+    height: 110px;
     margin-bottom: 15px;
     display: flex;
     align-items: center;
@@ -178,18 +183,17 @@ body {
     border-radius: 8px;
 }
 .filtro-icon-fallback {
-    font-size: 5.5em; /* AUMENTADO */
+    font-size: 5.5em;
     color: #555;
     display: none; 
     align-items: center;
     justify-content: center;
 }
 .filtro-nome-texto {
-    font-size: 1em; /* Aumentado um pouco */
+    font-size: 1em;
     font-weight: 500;
     margin-top: auto;
 }
-/* ========= FIM DAS ALTERAÇÕES NOS FILTROS ========= */
 
 /* Seção de Produtos */
 .produtos-section {
@@ -257,21 +261,16 @@ body {
     .container-principal-home { margin-top: 20px; padding: 0 10px; }
     .filtros-section { padding: 15px; margin-bottom: 20px;}
     .filtros-section h2, .produtos-section h2 { font-size: 1.4em; margin-bottom: 15px; }
-    
-    /* Ajustes para filtros em telas menores */
-    .filtro-card { width: calc(50% - 12px); min-height: 180px; padding: 10px;} /* Altura e padding ajustados */
-    .filtro-visual-container { width: 80px; height: 80px; margin-bottom: 10px;} /* Reduzido para mobile */
-    .filtro-icon-fallback { font-size: 3.5em; } /* Reduzido para mobile */
-    .filtro-nome-texto { font-size: 0.9em; }
-
+    .filtro-card { width: calc(50% - 12px); min-height: 180px; padding: 10px;}
+    .filtro-visual-container { width: 80px; height: 80px; margin-bottom: 10px;}
+    .filtro-icon-fallback { font-size: 3.5em; }
     .produto-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
-    .filtro-card { width: calc(100% - 10px); min-height: 170px; } /* 1 filtro por linha */
-    .filtro-visual-container { width: 70px; height: 70px; } /* Ajustado */
-    .filtro-icon-fallback { font-size: 3em; } /* Ajustado */
-
+    .filtro-card { width: calc(100% - 10px); min-height: 170px; }
+    .filtro-visual-container { width: 70px; height: 70px; }
+    .filtro-icon-fallback { font-size: 3em; }
     .section-title { font-size: 1.3em; }
     .header-action-btn img { width: 20px; height: 20px; }
     .logout-text-link { font-size: 0.85em; }

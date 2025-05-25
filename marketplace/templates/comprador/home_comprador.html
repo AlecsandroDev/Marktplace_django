@@ -3,7 +3,7 @@
 
 {% block title %}Início - {{ nome_usuario|default:"UniMarket" }}{% endblock title %}
 
-{% block nav_inicio_active %}active{% endblock %} {# Define a aba Início como ativa #}
+{% block nav_inicio_active %}{% if not selected_category_id and not request.GET.q_search %}active{% endif %}{% endblock %}
 
 {% block content %}
     <section class="filtros-section">

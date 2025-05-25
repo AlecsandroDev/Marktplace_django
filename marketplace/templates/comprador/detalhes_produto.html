@@ -4,16 +4,14 @@
 {% block title %}{{ produto.nome }} - UniMarket{% endblock title %}
 
 {% block extra_css %}
-    {# Link para o CSS específico desta página, se for diferente do da home #}
     <link rel="stylesheet" href="{% static 'accounts/css/detalhes_produto_comprador.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
-    <div class="produto-detalhe-wrapper"> {# Wrapper para aplicar estilos específicos da página de detalhes se necessário #}
+    <div class="produto-detalhe-wrapper">
         {% if produto %}
             <div class="produto-breadcrumb">
                 <a href="{% url 'marketplace:pagina_inicial_comprador' %}">Início</a> &gt; 
-                {# Futuramente: <a href="#">{{ produto.categoria_id|capfirst }}</a> &gt; #}
                 <span>{{ produto.nome }}</span>
             </div>
 
@@ -53,20 +51,16 @@
                 </div>
             </div>
 
-            {# --- SEÇÃO PARA COMENTÁRIOS E AVALIAÇÕES (COMEÇO) --- #}
             <section class="reviews-section">
                 <h2 class="section-title-reviews">Avaliações e Comentários</h2>
-                
-                {# Formulário para novo comentário/avaliação #}
-                {% if user.is_authenticated %} {# Só mostra o formulário se o usuário estiver logado #}
+                {% if user.is_authenticated %}
                 <div class="review-form-container">
                     <h3>Deixe sua avaliação:</h3>
-                    <form method="POST" action="#"> {# Action para view de submissão de review #}
+                    <form method="POST" action="#">
                         {% csrf_token %}
                         <input type="hidden" name="produto_id" value="{{ produto.id }}">
                         <div class="rating-stars">
                             <span>Sua nota:</span>
-                            {# Inputs de estrela (CSS fará parecer estrelas) #}
                             <div class="star-input">
                                 <input type="radio" id="star5-{{ produto.id }}" name="rating" value="5"><label for="star5-{{ produto.id }}" title="5 estrelas">☆</label>
                                 <input type="radio" id="star4-{{ produto.id }}" name="rating" value="4"><label for="star4-{{ produto.id }}" title="4 estrelas">☆</label>
@@ -86,10 +80,10 @@
                     <p><a href="{% url 'marketplace:comprador_login' %}?next={{ request.path }}">Faça login</a> para deixar uma avaliação.</p>
                 {% endif %}
 
-                {# Lista de comentários/avaliações existentes #}
                 <div class="existing-reviews">
                     <h3>O que outros compradores disseram:</h3>
-                    {% if produto.reviews %} {# Supondo que 'produto.reviews' seja uma lista de reviews no contexto #}
+                    {# Exemplo de como listar reviews - você precisará passar 'produto.reviews' da view #}
+                    {% if produto.reviews %} 
                         {% for review in produto.reviews %}
                             <div class="review-item">
                                 <p class="review-author"><strong>{{ review.user_name }}</strong> - <span class="review-rating">{% for i in ""|center:review.rating %}★{% endfor %}{% for i in ""|center:review.empty_stars %}☆{% endfor %}</span></p>
@@ -102,10 +96,14 @@
                     {% endif %}
                 </div>
             </section>
-            {# --- SEÇÃO PARA COMENTÁRIOS E AVALIAÇÕES (FIM) --- #}
-
         {% else %}
             <p>Produto não encontrado.</p>
         {% endif %}
+    </div>
+
+    <div class="acoes-pagina-detalhes" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+        <a href="{{ request.META.HTTP_REFERER|default:request.build_absolute_uri }}" class="btn-link-secundario">Voltar à página anterior</a>
+
+        {# <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-link-secundario">Continuar Comprando</a> #}
     </div>
 {% endblock content %}
