@@ -77,7 +77,11 @@
                         </div>
                     </a>
                     <div class="produto-list-actions">
-                        <button class="btn-adicionar-carrinho-lista">Adicionar ao Carrinho</button>
+                        {% if produto.is_in_cart %}
+                            <a href="{% url 'marketplace:ver_carrinho' %}" class="btn-adicionar-carrinho-lista in-cart" title="Ver no Carrinho">No Carrinho ✓</a>
+                        {% else %}
+                            <a href="{% url 'marketplace:adicionar_ao_carrinho' produto_id=produto.id %}" class="btn-adicionar-carrinho-lista">Adicionar ao Carrinho</a>
+                        {% endif %}
                         {% if produto.is_favorited %}
                             <a href="{% url 'marketplace:remover_dos_desejos' produto_id=produto.id %}" class="btn-wishlist list-action active" title="Remover dos Desejos">
                                 <img src="{% static 'accounts/image/bookmark_active.png' %}" alt="Favorito">
@@ -105,7 +109,7 @@
             </div>
         {% endif %}
         {% if not search_query and not product_list and not messages %}
-            <p class="search-prompt">Digite um termo na barra de pesquisa acima para encontrar produtos.</p>
+            <p class="search-prompt">Use a barra de pesquisa para encontrar produtos ou <a href="{% url 'marketplace:pagina_inicial_comprador' %}">volte para o início</a>.</p>
         {% endif %}
     </section>
 </div>

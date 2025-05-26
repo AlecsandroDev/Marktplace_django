@@ -60,7 +60,12 @@
                         </div>
                     </a>
                     <div class="produto-card-actions">
-                        <button class="btn-adicionar-carrinho">Adicionar ao Carrinho</button>
+                        {% if produto.is_in_cart %}
+                             <a href="{% url 'marketplace:ver_carrinho' %}" class="btn-adicionar-carrinho in-cart" title="Ver no Carrinho">No Carrinho ✓</a>
+                        {% else %}
+                            <a href="{% url 'marketplace:adicionar_ao_carrinho' produto_id=produto.id %}" class="btn-adicionar-carrinho">Adicionar ao Carrinho</a>
+                        {% endif %}
+                        
                         {% if produto.is_favorited %}
                             <a href="{% url 'marketplace:remover_dos_desejos' produto_id=produto.id %}" class="btn-wishlist card-action active" title="Remover dos Desejos">
                                 <img src="{% static 'accounts/image/bookmark_active.png' %}" alt="Favorito">

@@ -27,11 +27,20 @@
                title="Lista de Desejos">
                 <img src="{% static 'accounts/image/bookmark.png' %}" alt="Desejos">
             </a>
-            <a href="#" class="header-action-btn" title="Carrinho"> 
-                <img src="{% static 'accounts/image/cart.png' %}" alt="Carrinho">
+            <a href="{% url 'marketplace:ver_carrinho' %}" 
+               class="header-action-btn cart-icon-link {% if request.resolver_match.url_name == 'ver_carrinho' %}active-icon{% endif %}" 
+               title="Carrinho"> 
+                {% if request.session.num_itens_carrinho > 0 %}
+                    <img src="{% static 'accounts/image/cart_full.png' %}" alt="Carrinho com itens">
+                {% else %}
+                    <img src="{% static 'accounts/image/cart.png' %}" alt="Carrinho vazio">
+                {% endif %}
+                {% if request.session.num_itens_carrinho > 0 %}
+                    <span class="cart-count">{{ request.session.num_itens_carrinho }}</span>
+                {% endif %}
             </a>
             <div class="profile-action">
-                 <a href="#" class="header-action-btn profile-btn" title="Minha Conta"> 
+                 <a href="#" class="header-action-btn profile-btn" title="Minha Conta"> {# Futuramente: {% url 'marketplace:nome_url_perfil_usuario' %} #}
                     <img src="{% static 'accounts/image/user.png' %}" alt="Perfil">
                 </a>
                 {% if user.is_authenticated %}
@@ -44,8 +53,8 @@
     <nav class="main-navigation-tabs">
         <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="nav-tab {% block nav_inicio_active %}{% if request.resolver_match.url_name == 'pagina_inicial_comprador' and not request.GET.categoria and not request.GET.q_search %}active{% endif %}{% endblock %}">Início</a>
         <a href="#" class="nav-tab {% block nav_pedidos_active %}{% endblock %}">Pedidos</a> 
-        {# A aba Perfil só fica ativa se a URL for especificamente a de perfil (que ainda não criamos) #}
-        <a href="#" class="nav-tab {% block nav_perfil_active %}{% if request.resolver_match.url_name == 'sua_url_de_perfil_aqui' %}active{% endif %}{% endblock %}">Perfil</a>
+        {# Aba Perfil só ativa se a URL for a de perfil (que você ainda vai criar o nome da url) #}
+        <a href="#" class="nav-tab {% block nav_perfil_active %}{% if request.resolver_match.url_name == 'NOME_DA_SUA_URL_DE_PERFIL' %}active{% endif %}{% endblock %}">Perfil</a>
     </nav>
 
     <main class="container-principal-home">

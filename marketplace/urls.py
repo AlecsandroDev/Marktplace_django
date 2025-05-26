@@ -30,10 +30,13 @@ urlpatterns = [
     path('comprador/produto/<int:produto_id>/', views.detalhes_produto, name='detalhes_produto'),
     path('comprador/busca/', views.pagina_busca_produto, name='pagina_busca_produto'),
     
-    # Lista de Desejos URLs
     path('comprador/lista-desejos/', views.lista_desejos, name='lista_desejos'),
     path('comprador/desejos/adicionar/<int:produto_id>/', views.adicionar_aos_desejos, name='adicionar_aos_desejos'),
     path('comprador/desejos/remover/<int:produto_id>/', views.remover_dos_desejos, name='remover_dos_desejos'),
+
+    path('comprador/carrinho/', views.ver_carrinho, name='ver_carrinho'),
+    path('comprador/carrinho/adicionar/<int:produto_id>/', views.adicionar_ao_carrinho, name='adicionar_ao_carrinho'),
+    path('comprador/carrinho/remover/<int:item_id>/', views.remover_do_carrinho, name='remover_do_carrinho'),
 
     # Password Reset URLs
     path('comprador/esqueceu-senha/',

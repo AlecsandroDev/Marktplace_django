@@ -3,7 +3,13 @@
 
 {% block title %}Minha Lista de Desejos - UniMarket{% endblock title %}
 
-{# {% block nav_perfil_active %}active{% endblock %} <- REMOVIDO para não ativar a aba Perfil #}
+{# Nenhum bloco de navegação principal é explicitamente ativado aqui,
+   o ícone de favoritos no header já indica a página ativa.
+   Se você criar uma aba "Favoritos" no menu principal, ative o bloco dela aqui.
+#}
+{% block nav_inicio_active %}{% endblock %}
+{% block nav_pedidos_active %}{% endblock %}
+{% block nav_perfil_active %}{% endblock %} 
 
 {% block extra_css %}
 {% endblock extra_css %}
@@ -16,9 +22,9 @@
 
     <section class="produtos-section">
         {% if produtos_favoritados %}
-            <div class="produto-grid">
+            <div class="produto-grid"> 
                 {% for produto in produtos_favoritados %}
-                <div class="produto-card">
+                <div class="produto-card"> 
                     <a href="{% url 'marketplace:detalhes_produto' produto_id=produto.id %}" class="produto-link">
                         {% if produto.imagem_arquivo_local %}
                             <img src="{% static 'accounts/image/'|add:produto.imagem_arquivo_local %}" alt="{{ produto.nome }}" class="produto-imagem">
@@ -33,9 +39,14 @@
                             <p class="produto-preco">R$ {{ produto.preco }}</p>
                         </div>
                     </a>
-                    <div class="produto-card-actions">
-                        <a href="{% url 'marketplace:remover_dos_desejos' produto_id=produto.id %}" class="btn-remover-desejo full-width" title="Remover dos Desejos">
-                            <img src="{% static 'accounts/image/bookmark_active.png' %}" alt="Remover"> Remover
+                    <div class="produto-card-actions wishlist-item-actions">
+                        {% if produto.is_in_cart %}
+                             <a href="{% url 'marketplace:ver_carrinho' %}" class="btn-adicionar-carrinho in-cart" title="Ver no Carrinho">No Carrinho ✓</a>
+                        {% else %}
+                            <a href="{% url 'marketplace:adicionar_ao_carrinho' produto_id=produto.id %}" class="btn-adicionar-carrinho">Adicionar ao Carrinho</a>
+                        {% endif %}
+                        <a href="{% url 'marketplace:remover_dos_desejos' produto_id=produto.id %}" class="btn-wishlist card-action active" title="Remover dos Desejos">
+                             <img src="{% static 'accounts/image/bookmark_active.png' %}" alt="Remover">
                         </a>
                     </div>
                 </div>

@@ -1,0 +1,71 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Meu Carrinho de Compras - UniMarket{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/carrinho.css' %}">
+{% endblock extra_css %}
+
+{% block nav_perfil_active %}{% endblock %} 
+{# Ícone do carrinho no header já tem a classe 'active-icon' via base_comprador.html #}
+
+{% block content %}
+<div class="cart-page-container">
+    <h1 class="section-title">Meu Carrinho de Compras</h1>
+
+    {% if itens_carrinho %}
+        <div class="cart-items-table">
+            <div class="cart-header-row">
+                <div class="cart-header-item product-col">Produto</div>
+                <div class="cart-header-item price-col">Preço Unit.</div>
+                <div class="cart-header-item quantity-col">Quantidade</div>
+                <div class="cart-header-item subtotal-col">Subtotal</div>
+                <div class="cart-header-item action-col">Ação</div>
+            </div>
+
+            {% for item in itens_carrinho %}
+            <div class="cart-item-row">
+                <div class="cart-item product-col">
+                    <a href="{% url 'marketplace:detalhes_produto' produto_id=item.id %}" class="cart-item-link">
+                        {% if item.tipo_imagem == 'local' %}
+                            <img src="{% static 'accounts/image/'|add:item.imagem %}" alt="{{ item.nome }}" class="cart-item-image">
+                        {% elif item.tipo_imagem == 'url' %}
+                            <img src="{{ item.imagem }}" alt="{{ item.nome }}" class="cart-item-image">
+                        {% else %}
+                            <img src="{% static 'accounts/image/placeholder_produto.png' %}" alt="{{ item.nome }}" class="cart-item-image">
+                        {% endif %}
+                        <div class="cart-item-info">
+                            <h3 class="cart-item-name">{{ item.nome }}</h3>
+                               <p class="cart-item-seller">Por: {{ item.vendedor_nome }}</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="cart-item price-col">R$ {{ item.preco_unitario|floatformat:2 }}</div>
+                <div class="cart-item quantity-col">
+                    <form action="{% url 'marketplace:adicionar_ao_carrinho' produto_id=item.id %}" method="POST" class="form-update-quantity">
+                        {% csrf_token %}
+                        <input type="number" name="quantidade" value="{{ item.quantidade }}" min="1" max="99" class="cart-item-quantity" onchange="this.form.submit()">
+                    </form>
+                </div>
+                <div class="cart-item subtotal-col">R$ {{ item.subtotal|floatformat:2 }}</div>
+                <div class="cart-item action-col">
+                    <a href="{% url 'marketplace:remover_do_carrinho' item_id=item.id %}" class="btn-remove-item">Remover</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="cart-summary">
+            <h3 class="cart-total">Total do Carrinho: <strong>R$ {{ total_carrinho|floatformat:2 }}</strong></h3>
+            <a href="#" class="btn-checkout">Continuar para Finalizar Compra</a>
+        </div>
+
+    {% else %}
+        <div class="empty-cart-message">
+            <p>Seu carrinho de compras está vazio!</p>
+            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-explorar-produtos">Comece a Comprar</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}
