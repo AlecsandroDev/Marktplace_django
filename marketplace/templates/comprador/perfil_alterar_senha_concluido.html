@@ -1,0 +1,21 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Senha Alterada - UniMarket{% endblock title %}
+
+{% block nav_perfil_active %}active{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/perfil_comprador.css' %}"> 
+{% endblock extra_css %}
+
+{% block content %}
+<div class="profile-page-container">
+    <div class="feedback-card" style="max-width: 550px; margin: 20px auto; text-align:center; background-color: #fff; padding:30px 40px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <h1 class="section-title" style="color: #4E7A53;">Senha Alterada com Sucesso!</h1>
+        <p style="font-size: 1.1em; margin-bottom: 25px;">Sua senha foi alterada e você já pode utilizá-la para o próximo login.</p>
+        <br>
+        <a href="{% url 'marketplace:perfil_comprador' %}" class="btn-principal-feedback">Voltar ao Perfil</a>
+    </div>
+</div>
+{% endblock content %}

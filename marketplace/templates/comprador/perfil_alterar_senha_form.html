@@ -1,0 +1,57 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Alterar Senha - UniMarket{% endblock title %}
+
+{% block nav_perfil_active %}active{% endblock %} {# Mantém a aba "Perfil" ativa #}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/perfil_comprador.css' %}"> 
+    {# Reutiliza o CSS do perfil para consistência ou crie um específico #}
+{% endblock extra_css %}
+
+{% block content %}
+<div class="profile-page-container">
+    <h1 class="section-title">Alterar Senha</h1>
+
+    <div class="form-container-centered" style="max-width: 550px; margin: 20px auto; background-color: #fff; padding:30px 40px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="form-errors-summary"> {# Reutilize a classe .messages-global .message-error se preferir #}
+                <p><strong>Por favor, corrija os erros abaixo:</strong></p>
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <p class="form-error-item">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="input-group-reset"> {# Reutilizando estilo do input #}
+                <label for="{{ form.old_password.id_for_label }}">Senha atual:</label>
+                {{ form.old_password }}
+                {% if form.old_password.errors %}<div class="field-error-list">{{ form.old_password.errors }}</div>{% endif %}
+            </div>
+            <div class="input-group-reset">
+                <label for="{{ form.new_password1.id_for_label }}">Nova senha:</label>
+                {{ form.new_password1 }}
+                {% if form.new_password1.errors %}<div class="field-error-list">{{ form.new_password1.errors }}</div>{% endif %}
+            </div>
+            <div class="input-group-reset">
+                <label for="{{ form.new_password2.id_for_label }}">Confirmação da nova senha:</label>
+                {{ form.new_password2 }}
+                {% if form.new_password2.errors %}<div class="field-error-list">{{ form.new_password2.errors }}</div>{% endif %}
+            </div>
+
+            {% if form.new_password1.help_text %}
+                <div class="form-help-text">{{ form.new_password1.help_text|safe }}</div>
+            {% endif %}
+            
+            <button type="submit" class="btn-principal-feedback" style="width:100%; margin-top: 20px;">Alterar Minha Senha</button>
+        </form>
+        <p style="text-align:center; margin-top:25px;"><a href="{% url 'marketplace:perfil_comprador' %}" class="link-voltar-contextual" style="font-size:0.9em;">Cancelar e Voltar ao Perfil</a></p>
+    </div>
+</div>
+{% endblock content %}

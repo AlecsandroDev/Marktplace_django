@@ -1,0 +1,172 @@
+/* marketplace/static/accounts/css/perfil_comprador.css */
+
+/* Estilos gerais para a página de perfil e formulários relacionados */
+.profile-page-container {
+    background-color: #FFFFFF; /* Fundo branco para a área de conteúdo principal */
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-top: 20px;
+}
+
+.profile-page-container .section-title { /* Título principal da página */
+    margin-top: 0;
+    margin-bottom: 30px;
+    text-align: left; 
+    color: #3E6943; /* Verde escuro principal */
+    font-size: 1.8em;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.profile-layout {
+    display: flex;
+    gap: 35px; /* Espaço entre sidebar e conteúdo principal */
+    flex-wrap: wrap; /* Para responsividade */
+}
+
+/* Sidebar do Perfil */
+.profile-sidebar {
+    flex: 0 0 280px; /* Largura fixa, não cresce, não encolhe */
+    text-align: center;
+    padding: 25px;
+    background-color: #f9f9f9; /* Fundo levemente acinzentado para a sidebar */
+    border-radius: 8px;
+    border: 1px solid #e9e9e9;
+    align-self: flex-start; /* Alinha ao topo se o conteúdo principal for maior */
+}
+.profile-picture-area {
+    margin-bottom: 20px;
+}
+.profile-pic {
+    width: 160px; /* Tamanho da foto */
+    height: 160px;
+    border-radius: 50%; /* Foto redonda */
+    object-fit: cover;
+    border: 4px solid #fff; /* Borda branca em volta da foto */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    margin-bottom: 10px;
+}
+.btn-change-photo {
+    display: inline-block; /* Para que o botão não ocupe toda a largura */
+    font-size: 0.85em;
+    color: #007bff; /* Azul para links de ação */
+    text-decoration: none;
+    margin-top: 8px;
+    padding: 6px 10px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+}
+.btn-change-photo:hover { text-decoration: none; background-color: #f0f2f5; }
+
+.profile-username {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #333;
+}
+.profile-email {
+    font-size: 0.95em;
+    color: #555;
+    word-break: break-all; /* Para quebrar emails longos */
+}
+
+/* Conteúdo Principal do Perfil */
+.profile-main-content {
+    flex-grow: 1; /* Ocupa o espaço restante */
+    min-width: 300px; /* Para não ficar muito espremido */
+}
+.profile-section {
+    margin-bottom: 35px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.profile-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.profile-section h3 {
+    font-size: 1.35em;
+    color: #4E7A53; /* Verde para subtítulos */
+    margin-top: 0;
+    margin-bottom: 20px; /* Mais espaço após subtítulo */
+    padding-bottom: 8px;
+    /* border-bottom: 1px solid #e9e9e9; */
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px 25px; /* Espaço vertical e horizontal */
+    margin-bottom: 20px;
+}
+.info-item { font-size: 1em; color: #454545; line-height: 1.8; }
+.info-item strong { color: #333; margin-right: 8px; }
+
+.btn-edit-profile,
+.btn-change-password {
+    display: inline-block;
+    padding: 10px 22px;
+    background-color: #619559; /* Verde médio */
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.95em;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+}
+.btn-edit-profile:hover,
+.btn-change-password:hover { background-color: #507a48; }
+
+.activity-links { list-style-type: none; padding: 0; margin: 0; }
+.activity-links li { margin-bottom: 10px; }
+.activity-links a { color: #007bff; text-decoration: none; font-size: 1em; }
+.activity-links a:hover { text-decoration: underline; }
+
+
+/* Estilos para formulários centralizados (Alterar Senha, etc.) */
+.form-container-centered {
+    max-width: 550px; margin: 0 auto; /* Centraliza o form */
+    background-color: #fff; padding:30px 40px;
+    border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.form-container-centered .section-title { /* Título dentro do form */
+    text-align: center;
+    margin-bottom: 25px;
+}
+.form-container-centered .input-group-reset label { font-size: 0.9em; color: #555; }
+.form-container-centered .input-group-reset input[type="password"] {
+    width: 100%; padding: 12px 15px; border: 1px solid #dde1e6;
+    border-radius: 6px; background-color: #f9f9f9; color: #333;
+    font-size: 0.95em; box-sizing: border-box;
+}
+.form-container-centered .input-group-reset input[type="password"]:focus {
+    outline: none; border-color: #619559;
+    box-shadow: 0 0 0 3px rgba(97, 149, 89, 0.25);
+}
+.form-container-centered .form-errors-summary {
+    background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;
+    padding: 10px 15px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9em;
+}
+.form-container-centered .form-errors-summary p { margin: 0; }
+.form-container-centered .form-error-item { margin-top: 5px; }
+.form-container-centered .field-error-list ul { list-style-type: none; padding: 0; margin: 3px 0 0 0; color: #D8000C; font-size: 0.8em; }
+.form-container-centered .form-help-text { font-size: 0.85em; color: #666; margin-top: -10px; margin-bottom:20px; text-align: left; }
+.form-container-centered .form-help-text ul { padding-left: 20px; margin: 5px 0 0 0; }
+.form-container-centered .btn-principal-feedback { /* Botão de submissão no form */
+    width:100%; 
+    background-color: #4E7A53; /* Verde escuro */
+    font-size: 1em;
+}
+.form-container-centered .btn-principal-feedback:hover { background-color: #3E6943; }
+.form-container-centered .link-voltar-contextual { font-size: 0.9em; display: inline-block; margin-top: 5px; }
+
+
+/* Responsividade para Perfil */
+@media (max-width: 768px) {
+    .profile-layout { flex-direction: column; }
+    .profile-sidebar { flex-basis: auto; margin-bottom: 25px; }
+    .profile-page-container .section-title { text-align: center; }
+    .info-grid { grid-template-columns: 1fr; }
+    .form-container-centered { padding: 20px 25px;}
+}

@@ -4,28 +4,28 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.http import Http404
-import copy # Para deepcopy
+import copy
 
 # --- Dados de Placeholder (nível do módulo para reuso) ---
 _placeholder_all_products = [
     {'id': 1, 'nome': 'Bolo de Cenoura Delicioso', 'preco': '22.50', 'vendedor_nome': 'Doceria da Maria',
      'imagem_arquivo_local': 'bolo_de_cenoura.png', 'categoria_id': 'doces',
-     'descricao_longa': 'Um delicioso e fofinho bolo de cenoura com cobertura de chocolate artesanal, feito com ingredientes frescos e muito carinho. Perfeito para o seu café da tarde ou como sobremesa especial.'},
+     'descricao_longa': 'Um delicioso e fofinho bolo de cenoura com cobertura de chocolate artesanal...'},
     {'id': 2, 'nome': 'Coxinha Crocante (Unidade)', 'preco': '7.00', 'vendedor_nome': 'Salgados Express',
      'imagem_arquivo_local': 'coxinha.png', 'categoria_id': 'salgados',
-     'descricao_longa': 'Nossa famosa coxinha de frango com catupiry, com massa crocante por fora e recheio cremoso e abundante por dentro. Frita na hora para você!'},
+     'descricao_longa': 'Nossa famosa coxinha de frango com catupiry...'},
     {'id': 4, 'nome': 'PF Executivo - Frango Grelhado', 'preco': '28.00', 'vendedor_nome': 'Restaurante Sabor Caseiro',
      'imagem_arquivo_local': 'frango_grelhado.png', 'categoria_id': 'pratos_prontos',
-     'descricao_longa': 'Prato feito completo com frango grelhado suculento, arroz branco soltinho, feijão caseiro, batata frita crocante e uma salada fresca de alface e tomate.'},
+     'descricao_longa': 'Prato feito completo com frango grelhado suculento...'},
     {'id': 5, 'nome': 'Brigadeiro Gourmet (Unidade)', 'preco': '4.50', 'vendedor_nome': 'Doceria da Maria',
      'imagem_arquivo_local': 'brigadeiro.png', 'categoria_id': 'doces',
-     'descricao_longa': 'Brigadeiro gourmet feito com chocolate nobre e granulado de alta qualidade. Uma explosão de sabor que derrete na boca.'},
+     'descricao_longa': 'Brigadeiro gourmet feito com chocolate nobre...'},
     {'id': 6, 'nome': 'Mini Pizza Calabresa', 'preco': '8.00', 'vendedor_nome': 'Pizzaria Universitária',
      'imagem_arquivo_local': 'mini_pizza_calabresa.png', 'categoria_id': 'lanchinhos',
-     'descricao_longa': 'Mini pizza individual com massa artesanal, molho de tomate fresco, calabresa fatiada de primeira e queijo mussarela derretido. Ideal para um lanche rápido!'},
+     'descricao_longa': 'Mini pizza individual com massa artesanal...'},
     {'id': 7, 'nome': 'Empada de Palmito', 'preco': '6.50', 'vendedor_nome': 'Salgados da Tia',
      'imagem_arquivo_local': 'empada_de_palmito.png', 'categoria_id': 'salgados',
-     'descricao_longa': 'Delicada empada de palmito com massa que desmancha na boca e recheio cremoso. Uma ótima opção para qualquer hora do dia.'},
+     'descricao_longa': 'Delicada empada de palmito com massa que desmancha...'},
 ]
 
 _filter_categorias_example = [
@@ -35,22 +35,20 @@ _filter_categorias_example = [
     {'id': 'salgados', 'nome_exibicao': 'Salgados', 'icone': '🥐'},
 ]
 
-_simulacao_ids_favoritados = [1, 4] # Ex: Produtos com ID 1 e 4 estão favoritados
+_simulacao_ids_favoritados = [1, 4] 
 
 def _update_cart_item_count(request):
-    """Atualiza a contagem de itens distintos no carrinho na sessão."""
     carrinho = request.session.get('carrinho', {})
     request.session['num_itens_carrinho'] = len(carrinho)
     request.session.modified = True
 
 def _enrich_product_data(product_list_original, request_session, user_favorites_ids):
-    """Adiciona status 'is_favorited' e 'is_in_cart' a uma lista de produtos."""
-    enriched_list = copy.deepcopy(product_list_original)
+    enriched_list = copy.deepcopy(product_list_original) 
     carrinho_session = request_session.get('carrinho', {})
     for product in enriched_list:
         product_id_str = str(product.get('id'))
         product['is_favorited'] = product.get('id') in user_favorites_ids
-        product['is_in_cart'] = product_id_str in carrinho_session
+        product['is_in_cart'] = product_id_str in carrinho_session 
     return enriched_list
 
 # ========= VIEWS PÚBLICAS / DE ENTRADA =========
@@ -74,51 +72,39 @@ def admin_login(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_dashboard(request): return render(request, "admin/dashboard.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_anuncios(request): return render(request, "admin/anuncios.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_usuarios(request): return render(request, "admin/usuarios.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_usuario(request): return render(request, "admin/gerenciar_usuario.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_reportes(request): return render(request, "admin/reportes.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_reporte(request): return render(request, "admin/gerenciar_reporte.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_reportes_arquivados(request): return render(request, "admin/reportes_arquivados.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_reporte_arquivado(request): return render(request, "admin/gerenciar_reporte_arquivado.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_pedidos(request): return render(request, "admin/pedidos.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_pedido(request): return render(request, "admin/gerenciar_pedido.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_pedidos_finalizados(request): return render(request, "admin/pedidos_finalizados.html")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_pedido_finalizado(request): return render(request, "admin/gerenciar_pedido_finalizado.html")
-
 @login_required
 def admin_logout(request): logout(request); return redirect('marketplace:login')
 
@@ -180,7 +166,6 @@ def comprador_cadastro(request):
 def home_comprador(request):
     if request.user.is_staff:
         logout(request); messages.error(request, "Área restrita a compradores."); return redirect('marketplace:landing_page')
-        
     nome_usuario = request.user.first_name or request.user.username
     selected_category_id = request.GET.get('categoria')
     search_query = request.GET.get('q_search', '').strip() 
@@ -253,6 +238,7 @@ def detalhes_produto(request, produto_id):
     }
     return render(request, 'comprador/detalhes_produto.html', context)
 
+# --- VIEWS PARA LISTA DE DESEJOS ---
 @login_required
 def adicionar_aos_desejos(request, produto_id):
     global _simulacao_ids_favoritados
@@ -282,6 +268,7 @@ def lista_desejos(request):
     context = {'nome_usuario': nome_usuario, 'produtos_favoritados': produtos_favoritados_list }
     return render(request, 'comprador/lista_desejos.html', context)
 
+# --- VIEWS PARA CARRINHO DE COMPRAS ---
 @login_required
 def adicionar_ao_carrinho(request, produto_id):
     produto_selecionado = None
@@ -289,17 +276,12 @@ def adicionar_ao_carrinho(request, produto_id):
         if p.get('id') == produto_id: produto_selecionado = p; break
     if not produto_selecionado:
         messages.error(request, "Produto não encontrado!"); return redirect(request.META.get('HTTP_REFERER', 'marketplace:pagina_inicial_comprador'))
-    
-    carrinho = request.session.get('carrinho', {})
-    item_id_str = str(produto_id)
-    quantidade_form = 1
-
+    carrinho = request.session.get('carrinho', {}); item_id_str = str(produto_id); quantidade_form = 1
     if request.method == 'POST':
         try:
             quantidade_form = int(request.POST.get('quantidade', 1))
             if quantidade_form < 1: quantidade_form = 1
         except ValueError: quantidade_form = 1
-    
     if item_id_str in carrinho:
         if request.method == 'POST': carrinho[item_id_str]['quantidade'] = quantidade_form
         else: carrinho[item_id_str]['quantidade'] = carrinho[item_id_str].get('quantidade', 0) + 1 
@@ -328,24 +310,19 @@ def remover_do_carrinho(request, item_id):
         _update_cart_item_count(request)
         request.session.modified = True
         messages.success(request, f"'{nome_produto_removido}' removido do carrinho.")
-    else:
-        messages.info(request, "Item não encontrado no carrinho.")
+    else: messages.info(request, "Item não encontrado no carrinho.")
     return redirect('marketplace:ver_carrinho')
 
 @login_required
 def ver_carrinho(request):
     carrinho_session = request.session.get('carrinho', {}); 
     itens_carrinho = []; total_carrinho = 0;
-    _update_cart_item_count(request) # Garante que num_itens_carrinho na sessão está atualizado
-
-    for item_id_str, item_data in carrinho_session.items(): # Renomeado item_id para item_id_str
+    _update_cart_item_count(request) 
+    for item_id_str, item_data in carrinho_session.items():
         try:
-            preco = float(item_data.get('preco', 0))
-            quantidade = int(item_data.get('quantidade', 0))
+            preco = float(item_data.get('preco', 0)); quantidade = int(item_data.get('quantidade', 0))
             if quantidade <= 0: 
-                if item_id_str in request.session.get('carrinho', {}): # Use item_id_str
-                     del request.session['carrinho'][item_id_str]
-                     request.session.modified = True
+                if item_id_str in request.session.get('carrinho', {}): del request.session['carrinho'][item_id_str]; request.session.modified = True
                 continue
             subtotal = preco * quantidade
             itens_carrinho.append({
@@ -356,18 +333,48 @@ def ver_carrinho(request):
             })
             total_carrinho += subtotal
         except (ValueError, TypeError):
-            messages.error(request, f"Item inválido no carrinho: {item_data.get('nome', 'ID '+item_id_str)}")
-            if item_id_str in request.session.get('carrinho', {}): # Use item_id_str
-                del request.session['carrinho'][item_id_str]
-                request.session.modified = True
+            messages.error(request, f"Item inválido no carrinho: ID {item_id_str}")
+            if item_id_str in request.session.get('carrinho', {}): del request.session['carrinho'][item_id_str]; request.session.modified = True
             continue
-    
     context = {
-        'itens_carrinho': itens_carrinho, 
-        'total_carrinho': total_carrinho,
+        'itens_carrinho': itens_carrinho, 'total_carrinho': total_carrinho,
         'nome_usuario': request.user.first_name or request.user.username,
     }
     return render(request, 'comprador/carrinho.html', context)
+
+# NOVA VIEW PARA O PERFIL DO COMPRADOR
+@login_required
+def perfil_comprador(request):
+    if request.user.is_staff:
+        logout(request)
+        messages.error(request, "Página não disponível para administradores.")
+        return redirect('marketplace:landing_page')
+
+    user = request.user
+    perfil_extra = {
+        'idade': 'N/D (Exemplo: 20)', 
+        'cpf': 'N/D (Ex: 000.000.000-00)',   
+        'curso': 'N/D (Ex: Engenharia de Software)', 
+        'ra': 'N/D (Ex: 123456)',    
+        'foto_url': None 
+    }
+    # Quando o modelo UserProfile existir:
+    # try:
+    #     user_profile = request.user.userprofile 
+    #     perfil_extra['idade'] = user_profile.idade
+    #     perfil_extra['cpf'] = user_profile.cpf
+    #     perfil_extra['curso'] = user_profile.curso
+    #     perfil_extra['ra'] = user_profile.ra
+    #     if user_profile.foto: perfil_extra['foto_url'] = user_profile.foto.url
+    # except UserProfile.DoesNotExist: pass
+
+    context = {
+        'nome_usuario': user.first_name or user.username,
+        'email_usuario': user.email,
+        'perfil_extra': perfil_extra,
+    }
+    return render(request, 'comprador/perfil.html', context)
+
 
 @login_required
 def comprador_logout(request):

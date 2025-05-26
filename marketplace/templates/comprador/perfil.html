@@ -1,0 +1,61 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Meu Perfil - {{ nome_usuario }}{% endblock title %}
+
+{% block nav_perfil_active %}active{% endblock %} {# Ativa a aba "Perfil" no menu #}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/perfil_comprador.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="profile-page-container">
+    <h1 class="section-title">Meu Perfil</h1>
+
+    <div class="profile-layout">
+        <aside class="profile-sidebar">
+            <div class="profile-picture-area">
+                {% if perfil_extra.foto_url %}
+                    <img src="{{ perfil_extra.foto_url }}" alt="Foto de Perfil" class="profile-pic">
+                {% else %}
+                    <img src="{% static 'accounts/image/user_placeholder_large.png' %}" alt="Foto de Perfil Padrão" class="profile-pic"> 
+                    {# Crie user_placeholder_large.png ou ajuste para user.png #}
+                {% endif %}
+                <a href="#" class="btn-change-photo">Alterar Foto</a> {# Funcionalidade futura #}
+            </div>
+            <h2 class="profile-username">{{ nome_usuario }}</h2>
+            <p class="profile-email">{{ email_usuario }}</p>
+        </aside>
+
+        <section class="profile-main-content">
+            <div class="profile-section">
+                <h3>Informações Pessoais</h3>
+                <div class="info-grid">
+                    <div class="info-item"><strong>Nome Completo:</strong> <span>{{ nome_usuario }}</span></div>
+                    <div class="info-item"><strong>Email:</strong> <span>{{ email_usuario }}</span></div>
+                    <div class="info-item"><strong>Idade:</strong> <span>{{ perfil_extra.idade }}</span></div>
+                    <div class="info-item"><strong>CPF:</strong> <span>{{ perfil_extra.cpf }}</span></div>
+                    <div class="info-item"><strong>Curso:</strong> <span>{{ perfil_extra.curso }}</span></div>
+                    <div class="info-item"><strong>RA:</strong> <span>{{ perfil_extra.ra }}</span></div>
+                </div>
+                <a href="#" class="btn-edit-profile">Editar Informações</a> {# Funcionalidade futura #}
+            </div>
+
+            <div class="profile-section">
+                <h3>Segurança da Conta</h3>
+                <a href="{% url 'marketplace:password_change' %}" class="btn-change-password">Alterar Senha</a>
+            </div>
+
+            <div class="profile-section">
+                <h3>Minhas Atividades</h3>
+                <ul class="activity-links">
+                    <li><a href="#">Meus Pedidos</a></li> {# Futuramente: {% url 'marketplace:meus_pedidos' %} #}
+                    <li><a href="{% url 'marketplace:lista_desejos' %}">Minha Lista de Desejos</a></li>
+                    {# Adicione mais links relevantes aqui #}
+                </ul>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock content %}
