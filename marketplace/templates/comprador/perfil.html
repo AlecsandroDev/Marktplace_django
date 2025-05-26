@@ -13,7 +13,7 @@
 <div class="profile-page-container">
     <h1 class="section-title">Meu Perfil</h1>
 
-    {% if messages %} {# Mensagens específicas para esta página, como sucesso ao editar #}
+    {% if messages %}
         <ul class="messages-global" style="margin-bottom: 20px;">
             {% for message in messages %}
                 <li class="message-{{ message.tags }}">{{ message }}</li>
@@ -24,7 +24,7 @@
     <div class="profile-layout">
         <aside class="profile-sidebar">
             <div class="profile-picture-area">
-                {% if perfil_extra.foto_url %} {# Vem do contexto da view 'perfil_comprador' #}
+                {% if perfil_extra.foto_url %}
                     <img src="{{ perfil_extra.foto_url }}" alt="Foto de Perfil de {{ user_obj.first_name }}" class="profile-pic">
                 {% else %}
                     <img src="{% static 'accounts/image/user.png' %}" alt="Foto de Perfil Padrão" class="profile-pic default-profile-pic"> 
@@ -52,7 +52,7 @@
             <div class="profile-section">
                 <h3>Minhas Atividades</h3>
                 <div class="activity-buttons">
-                    <a href="#" class="btn-profile-action">Meus Pedidos</a> {# Futuramente: {% url 'marketplace:meus_pedidos' %} #}
+                    <a href="#" class="btn-profile-action">Meus Pedidos</a> 
                     <a href="{% url 'marketplace:lista_desejos' %}" class="btn-profile-action">Minha Lista de Desejos</a>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <h3>Segurança e Conta</h3>
                 <div class="account-actions-buttons">
                     <a href="{% url 'marketplace:password_change' %}" class="btn-profile-action change-password">Alterar Senha</a>
-                    <a href="{% url 'marketplace:comprador_logout' %}" class="btn-profile-action logout">Sair da Conta</a>
+                    <a href="{% url 'marketplace:comprador_logout' %}" class="btn-profile-action logout">Sair da Conta</a> 
                     <a href="{% url 'marketplace:encerrar_conta' %}" class="btn-terminate-account">Encerrar Minha Conta</a>
                 </div>
             </div>

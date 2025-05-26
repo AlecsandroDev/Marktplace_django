@@ -11,7 +11,7 @@
 <body>
     <header class="topbar">
         <div class="logo-area">
-            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="logo-text"> </a> {# UniMarket - Nome do seu site aqui ou deixe vazio para só o logo CSS #}
+            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="logo-text"> </a>
         </div>
         <div class="search-area">
             <form method="GET" action="{% url 'marketplace:pagina_busca_produto' %}" class="search-form">
@@ -44,21 +44,19 @@
                     class="header-action-btn profile-btn 
                            {% if request.resolver_match.url_name == 'perfil_comprador' or request.resolver_match.url_name == 'editar_perfil' or request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' or request.resolver_match.url_name == 'encerrar_conta' %}active-icon{% endif %}" 
                     title="Minha Conta">
-                    {# Tenta mostrar a foto do perfil do UserProfile (simulado), se não, usa o user.png padrão #}
-                    {% if user.is_authenticated and user.userprofile.foto.url %} {# Adapte para seu modelo UserProfile #}
+                    {% if user.is_authenticated and user.userprofile.foto.url %}
                         <img src="{{ user.userprofile.foto.url }}" alt="Perfil" class="header-profile-pic">
                     {% else %}
                         <img src="{% static 'accounts/image/user.png' %}" alt="Perfil" class="header-profile-icon">
                     {% endif %}
                 </a>
-                {# O Link de SAIR em texto foi REMOVIDO daqui, conforme solicitado #}
             </div>
         </div>
     </header>
 
     <nav class="main-navigation-tabs">
         <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="nav-tab {% block nav_inicio_active %}{% if request.resolver_match.url_name == 'pagina_inicial_comprador' and not request.GET.categoria and not request.GET.q_search %}active{% endif %}{% endblock %}">Início</a>
-        <a href="#" class="nav-tab {% block nav_pedidos_active %}{% endblock %}">Pedidos</a> 
+        <a href="{% url 'marketplace:meus_pedidos' %}" class="nav-tab {% block nav_pedidos_active %}{% if request.resolver_match.url_name == 'meus_pedidos' or request.resolver_match.url_name == 'detalhe_pedido' %}active{% endif %}{% endblock %}">Pedidos</a> 
         <a href="{% url 'marketplace:perfil_comprador' %}" 
            class="nav-tab {% block nav_perfil_active %}{% if request.resolver_match.url_name == 'perfil_comprador' or request.resolver_match.url_name == 'lista_desejos' or request.resolver_match.url_name == 'editar_perfil' or request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' or request.resolver_match.url_name == 'encerrar_conta' %}active{% endif %}{% endblock %}">Perfil</a>
     </nav>

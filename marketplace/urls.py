@@ -38,12 +38,10 @@ urlpatterns = [
     path('comprador/carrinho/adicionar/<int:produto_id>/', views.adicionar_ao_carrinho, name='adicionar_ao_carrinho'),
     path('comprador/carrinho/remover/<int:item_id>/', views.remover_do_carrinho, name='remover_do_carrinho'),
     
-    # URLs de Perfil do Comprador
     path('comprador/perfil/', views.perfil_comprador, name='perfil_comprador'),
     path('comprador/perfil/editar/', views.editar_perfil, name='editar_perfil'),
     path('comprador/perfil/encerrar-conta/', views.encerrar_conta, name='encerrar_conta'),
 
-    # URLs para Alteração de Senha (dentro do perfil)
     path('comprador/perfil/alterar-senha/', 
          auth_views.PasswordChangeView.as_view(
              template_name='comprador/perfil_alterar_senha_form.html',
@@ -56,7 +54,6 @@ urlpatterns = [
          ), 
          name='password_change_done'),
 
-    # URLs para Recuperação de Senha
     path('comprador/esqueceu-senha/',
          auth_views.PasswordResetView.as_view(
              template_name='comprador/esquece_senha.html',
@@ -82,4 +79,11 @@ urlpatterns = [
              template_name='comprador/esquece_senha_completo.html'
          ),
          name='password_reset_complete'),
+
+    # URLs PARA PEDIDOS DO COMPRADOR
+    path('comprador/meus-pedidos/', views.meus_pedidos, name='meus_pedidos'),
+    path('comprador/meus-pedidos/<int:pedido_id>/', views.detalhe_pedido, name='detalhe_pedido'),
+    path('comprador/pedir-novamente/<int:pedido_id>/', views.pedir_novamente, name='pedir_novamente'),
+    # NOVA URL PARA SUBMETER AVALIAÇÃO DE UM ITEM DE PEDIDO
+    path('comprador/pedido/<int:pedido_id>/avaliar-item/<int:produto_id>/', views.submeter_avaliacao_pedido, name='submeter_avaliacao_pedido'),
 ]

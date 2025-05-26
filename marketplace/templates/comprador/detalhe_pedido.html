@@ -1,0 +1,125 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Pedido #{{ pedido.id }} - UniMarket{% endblock title %}
+
+{% block nav_pedidos_active %}active{% endblock %} {# Mantém a aba "Pedidos" ativa #}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/detalhe_pedido.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="order-detail-page-container">
+    <div class="contextual-nav-pedido">
+        <a href="{% url 'marketplace:meus_pedidos' %}" class="link-voltar-pedidos">
+            &larr; Voltar para Meus Pedidos
+        </a>
+    </div>
+
+    {% if pedido %}
+        <header class="order-detail-header">
+            <h1>Detalhes do Pedido #{{ pedido.id }}</h1>
+            <div class="order-meta">
+                <span>Data: {{ pedido.data_pedido }}</span>
+                <span class="order-status-detail status-{{ pedido.status|slugify }}">{{ pedido.status }}</span>
+            </div>
+        </header>
+
+        <section class="order-items-section">
+            <h2>Itens do Pedido</h2>
+            <div class="order-items-list">
+                {% for item in pedido.itens %}
+                <div class="order-item-card">
+                    <div class="order-item-main-info">
+                        <div class="order-item-image-container">
+                            <a href="{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}" class="order-item-image-link">
+                                {% if item.imagem_arquivo_local %}
+                                    <img src="{% static 'accounts/image/'|add:item.imagem_arquivo_local %}" alt="{{ item.nome }}" class="order-item-image">
+                                {% elif item.imagem_url %}
+                                    <img src="{{ item.imagem_url }}" alt="{{ item.nome }}" class="order-item-image">
+                                {% else %}
+                                    <img src="{% static 'accounts/image/placeholder_produto_pequeno.png' %}" alt="{{ item.nome }}" class="order-item-image">
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="order-item-info">
+                            <h4 class="order-item-name"><a href="{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}">{{ item.nome }}</a></h4>
+                            <p>Quantidade: {{ item.quantidade }}</p>
+                            <p>Preço Unitário: R$ {{ item.preco_unitario|floatformat:2 }}</p>
+                        </div>
+                        <div class="order-item-subtotal">
+                            Subtotal: R$ {{ item.subtotal|floatformat:2 }}
+                        </div>
+                    </div>
+
+                    {% if pedido.status == 'Concluído' %}
+                    <div class="item-evaluation-section">
+                        <h4>Avaliar este Produto:</h4>
+                        {% if item.ja_avaliado_pelo_usuario_atual %}
+                            <p class="evaluation-done-message"><small>Você já avaliou este produto (simulação).</small></p>
+                        {% else %}
+                            <form method="POST" action="{% url 'marketplace:submeter_avaliacao_pedido' pedido_id=pedido.id produto_id=item.produto_id %}" class="item-review-form">
+                                {% csrf_token %}
+                                <div class="rating-stars-form">
+                                    <span>Sua nota:</span>
+                                    <div class="star-input">
+                                        <input type="radio" id="star5-{{ pedido.id }}-{{ item.produto_id }}" name="rating" value="5" required><label for="star5-{{ pedido.id }}-{{ item.produto_id }}" title="5 estrelas">☆</label>
+                                        <input type="radio" id="star4-{{ pedido.id }}-{{ item.produto_id }}" name="rating" value="4"><label for="star4-{{ pedido.id }}-{{ item.produto_id }}" title="4 estrelas">☆</label>
+                                        <input type="radio" id="star3-{{ pedido.id }}-{{ item.produto_id }}" name="rating" value="3"><label for="star3-{{ pedido.id }}-{{ item.produto_id }}" title="3 estrelas">☆</label>
+                                        <input type="radio" id="star2-{{ pedido.id }}-{{ item.produto_id }}" name="rating" value="2"><label for="star2-{{ pedido.id }}-{{ item.produto_id }}" title="2 estrelas">☆</label>
+                                        <input type="radio" id="star1-{{ pedido.id }}-{{ item.produto_id }}" name="rating" value="1"><label for="star1-{{ pedido.id }}-{{ item.produto_id }}" title="1 estrela">☆</label>
+                                    </div>
+                                </div>
+                                <div class="comment-field-form">
+                                    <label for="comment-text-{{ pedido.id }}-{{ item.produto_id }}">Seu comentário:</label>
+                                    <textarea id="comment-text-{{ pedido.id }}-{{ item.produto_id }}" name="comment" rows="3" required></textarea>
+                                </div>
+                                <button type="submit" class="btn-submit-item-review">Enviar Avaliação</button>
+                            </form>
+                        {% endif %}
+                        
+                        {% if item.avaliacoes_do_produto %}
+                            <div class="item-existing-reviews">
+                                <h5>Avaliações de outros usuários para este produto:</h5>
+                                {% for avaliacao in item.avaliacoes_do_produto %}
+                                    <div class="item-review-summary">
+                                        <p class="review-author"><strong>{{ avaliacao.autor_nome|default:avaliacao.autor_username }}</strong> 
+                                            <span class="review-rating">
+                                                {% for i in "x"|rjust:avaliacao.nota|slice:"::" %}&#9733;{% endfor %}{% comment %}{% endcomment %}
+                                                {% for i in "x"|rjust:5|slice:avaliacao.nota|slice:"::" %}&#9734;{% endfor %}
+                                            </span>
+                                        </p>
+                                        <p class="review-text-summary">{{ avaliacao.comentario|truncatewords:15 }}</p>
+                                        <small class="review-date-summary">({{ avaliacao.data }})</small>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endif %} {# Fim do if pedido.status == 'Concluído' #}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="order-summary-section">
+            <div class="order-total-final">
+                <strong>Total do Pedido: R$ {{ pedido.total|floatformat:2 }}</strong>
+            </div>
+            <p><strong>Endereço de Entrega:</strong> {{ pedido.endereco_entrega }}</p>
+            <p><strong>Método de Pagamento:</strong> {{ pedido.metodo_pagamento }}</p>
+            
+            <div class="order-actions-detail">
+                <a href="{% url 'marketplace:pedir_novamente' pedido_id=pedido.id %}" class="btn-pedir-novamente">Pedir Novamente</a>
+            </div>
+        </section>
+
+    {% else %}
+        <div class="empty-message" style="padding: 20px; text-align:center;">
+             <p>Detalhes do pedido não encontrados.</p>
+             <a href="{% url 'marketplace:meus_pedidos' %}" class="btn-primary-action">Voltar para Meus Pedidos</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}

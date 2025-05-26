@@ -1,86 +1,86 @@
 {% extends 'comprador/base_comprador.html' %}
 {% load static %}
 
-{% block title %}{{ produto.nome }} - UniMarket{% endblock title %}
+{% block title %}Pedido #{{ pedido.id }} - UniMarket{% endblock title %}
+
+{% block nav_pedidos_active %}active{% endblock %} {# Ativa a aba "Pedidos" no menu principal #}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'accounts/css/detalhes_produto_comprador.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/detalhe_pedido.css' %}">
 {% endblock extra_css %}
 
 {% block content %}
-    <div class="produto-detalhe-wrapper">
-        {% if produto %}
-            <div class="contextual-nav">
-                <a href="{{ request.META.HTTP_REFERER|default:request.build_absolute_uri }}" class="link-voltar-contextual">
-                    <span class="seta-voltar">&larr;</span> Voltar
-                </a>
-                <div class="produto-breadcrumb">
-                    <a href="{% url 'marketplace:pagina_inicial_comprador' %}">Início</a> &gt; 
-                    <span>{{ produto.nome }}</span>
-                </div>
-            </div>
-
-            <h1>{{ produto.nome }}</h1>
-            
-            <div class="produto-detalhe-layout">
-                <div class="produto-imagem-coluna">
-                    {% if produto.imagem_arquivo_local %}
-                        <img src="{% static 'accounts/image/'|add:produto.imagem_arquivo_local %}" alt="{{ produto.nome }}" class="imagem-principal-produto">
-                    {% elif produto.imagem_url %}
-                        <img src="{{ produto.imagem_url }}" alt="{{ produto.nome }}" class="imagem-principal-produto">
-                    {% else %}
-                        <img src="{% static 'accounts/image/placeholder_produto_grande.png' %}" alt="{{ produto.nome }}" class="imagem-principal-produto">
-                    {% endif %}
-                </div>
-
-                <div class="produto-info-coluna">
-                    <p class="detalhe-vendedor">Vendido por: <strong>{{ produto.vendedor_nome }}</strong></p>
-                    <p class="detalhe-preco">R$ {{ produto.preco }}</p>
-                    
-                    <div class="produto-acoes-bloco">
-                        {% if produto.is_in_cart %}
-                             <a href="{% url 'marketplace:ver_carrinho' %}" class="btn-comprar-detalhes in-cart">Ver no Carrinho ✓</a>
-                        {% else %}
-                            <form action="{% url 'marketplace:adicionar_ao_carrinho' produto_id=produto.id %}" method="POST" class="form-add-carrinho-detalhe">
-                                {% csrf_token %}
-                                <div class="quantidade-grupo">
-                                    <label for="quantidade-{{ produto.id }}">Qtd:</label>
-                                    <input type="number" id="quantidade-{{ produto.id }}" name="quantidade" value="1" min="1" class="input-quantidade">
-                                </div>
-                                <button type="submit" class="btn-comprar-detalhes">Adicionar ao Carrinho</button>
-                            </form>
-                        {% endif %}
-                        
-                        {% if produto.is_favorited %}
-                            <a href="{% url 'marketplace:remover_dos_desejos' produto_id=produto.id %}" class="btn-wishlist-detalhe active" title="Remover dos Desejos">
-                                <img src="{% static 'accounts/image/bookmark_active.png' %}" alt="Favorito"> 
-                                <span>Remover dos Desejos</span>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'marketplace:adicionar_aos_desejos' produto_id=produto.id %}" class="btn-wishlist-detalhe" title="Adicionar aos Desejos">
-                                <img src="{% static 'accounts/image/bookmark.png' %}" alt="Não Favorito">
-                                <span>Adicionar aos Desejos</span>
-                            </a>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="produto-descricao-detalhada">
-                        <h3>Descrição do Produto</h3>
-                        <p>{{ produto.descricao_longa|linebreaksbr }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <section class="reviews-section">
-                {# ... (seção de reviews como estava) ... #}
-            </section>
-        {% else %}
-             <div class="no-results-container" style="text-align:center; padding: 30px;">
-                <p class="no-results-message">Produto não encontrado.</p>
-                <div class="no-results-actions">
-                    <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-voltar-busca">Voltar para Início</a>
-                </div>
-            </div>
-        {% endif %}
+<div class="order-detail-page-container">
+    <div class="contextual-nav-pedido">
+        <a href="{% url 'marketplace:meus_pedidos' %}" class="link-voltar-pedidos">
+            &larr; Voltar para Meus Pedidos
+        </a>
     </div>
+
+    {% if pedido %}
+        <header class="order-detail-header">
+            <h1>Detalhes do Pedido #{{ pedido.id }}</h1>
+            <div class="order-meta">
+                <span>Data: {{ pedido.data_pedido }}</span>
+                <span class="order-status-detail status-{{ pedido.status|slugify }}">{{ pedido.status }}</span>
+            </div>
+        </header>
+
+        <section class="order-items-section">
+            <h2>Itens do Pedido</h2>
+            <div class="order-items-list">
+                {% for item in pedido.itens %}
+                <div class="order-item-card">
+                    <div class="order-item-image-container">
+                        <a href="{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}" class="order-item-image-link">
+                            {% if item.imagem_arquivo_local %}
+                                <img src="{% static 'accounts/image/'|add:item.imagem_arquivo_local %}" alt="{{ item.nome }}" class="order-item-image">
+                            {% elif item.imagem_url %}
+                                <img src="{{ item.imagem_url }}" alt="{{ item.nome }}" class="order-item-image">
+                            {% else %}
+                                <img src="{% static 'accounts/image/placeholder_produto_pequeno.png' %}" alt="{{ item.nome }}" class="order-item-image">
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="order-item-info">
+                        <h4 class="order-item-name"><a href="{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}">{{ item.nome }}</a></h4>
+                        <p>Quantidade: {{ item.quantidade }}</p>
+                        <p>Preço Unitário: R$ {{ item.preco_unitario|floatformat:2 }}</p>
+                        {% if pedido.status == 'Concluído' %}
+                            {% if item.ja_avaliado %}
+                                <p class="item-feedback-link"><small>Você já avaliou este produto.</small></p>
+                            {% else %}
+                                <p class="item-feedback-link">
+                                    <a href="{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}#reviews-section">Avaliar este produto</a>
+                                </p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="order-item-subtotal">
+                        Subtotal: R$ {{ item.subtotal|floatformat:2 }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="order-summary-section">
+            <div class="order-total-final">
+                <strong>Total do Pedido: R$ {{ pedido.total|floatformat:2 }}</strong>
+            </div>
+            <p><strong>Endereço de Entrega:</strong> {{ pedido.endereco_entrega }}</p>
+            <p><strong>Método de Pagamento:</strong> {{ pedido.metodo_pagamento }}</p>
+            
+            <div class="order-actions-detail">
+                <a href="{% url 'marketplace:pedir_novamente' pedido_id=pedido.id %}" class="btn-pedir-novamente">Pedir Novamente</a>
+            </div>
+        </section>
+
+    {% else %}
+        <div class="empty-message" style="padding: 20px; text-align:center;">
+             <p>Detalhes do pedido não encontrados.</p>
+             <a href="{% url 'marketplace:meus_pedidos' %}" class="btn-primary-action">Voltar para Meus Pedidos</a>
+        </div>
+    {% endif %}
+</div>
 {% endblock content %}

@@ -1,8 +1,12 @@
 /* marketplace/static/accounts/css/perfil_comprador.css */
 body {
+    /* Esta regra de body pode ser redundante se base_comprador.html já define bem
+       através do tela_home_comprador.css. Mantenha apenas se quiser um fundo diferente
+       especificamente para as páginas de perfil. Se não, remova.
+    */
     font-family: Arial, sans-serif;
-    margin: 0; /* O body já tem reset no tela_home_comprador.css */
-    /* background-color: #f4f8fa;  /* Herdado de tela_home_comprador.css */
+    margin: 0;
+    background-color: #f0f2f5; /* Mesmo fundo do body de tela_home_comprador.css */
     color: #333;
     line-height: 1.6;
 }
@@ -12,14 +16,14 @@ body {
     padding: 25px 30px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    margin-top: 20px;
+    margin-top: 20px; /* Reutilizando .container-principal-home do base */
 }
 
-.profile-page-container .section-title {
+.profile-page-container .section-title { /* Estilo para o H1 principal da página */
     margin-top: 0;
     margin-bottom: 30px;
     text-align: left; 
-    color: #3E6943; /* Verde escuro principal do projeto */
+    color: #3E6943;
     font-size: 1.8em;
     font-weight: 600;
     border-bottom: 2px solid #f0f0f0;
@@ -29,17 +33,17 @@ body {
 .profile-layout {
     display: flex;
     gap: 35px;
-    flex-wrap: wrap; /* Para responsividade em telas menores */
+    flex-wrap: wrap;
 }
 
 .profile-sidebar {
-    flex: 0 0 280px; /* Largura fixa para a sidebar */
+    flex: 0 0 280px;
     text-align: center;
     padding: 25px;
-    background-color: #f9fafb; /* Um cinza bem claro para a sidebar */
+    background-color: #f9fafb;
     border-radius: 8px;
     border: 1px solid #e9e9e9;
-    align-self: flex-start; /* Mantém no topo se o conteúdo principal for maior */
+    align-self: flex-start;
 }
 .profile-picture-area {
     margin-bottom: 20px;
@@ -47,174 +51,107 @@ body {
 .profile-pic {
     width: 160px;
     height: 160px;
-    border-radius: 50%; /* Foto redonda */
-    object-fit: cover; /* Para a imagem preencher sem distorcer */
+    border-radius: 50%;
+    object-fit: cover;
     border: 4px solid #fff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     margin-bottom: 10px;
 }
 .profile-pic.default-profile-pic {
-    background-color: #e0e0e0; /* Fundo para o ícone user.png */
-    padding: 20px; /* Ajuste para centralizar/dimensionar o ícone user.png */
-    box-sizing: border-box; /* Garante que o padding não aumente o tamanho total */
-    /* object-fit: contain; /* Para o ícone não ser cortado, se necessário */
+    background-color: #e0e0e0;
+    padding: 20px; /* Ajuste para o ícone user.png preencher */
+    box-sizing: border-box;
 }
-.btn-change-photo { /* Link "Alterar Foto / Dados" abaixo da foto */
-    display: inline-block;
-    font-size: 0.85em;
-    color: #007bff; /* Azul para links de ação */
-    text-decoration: none;
-    margin-top: 8px;
-    padding: 6px 12px;
-    border: 1px solid #007bff;
-    border-radius: 5px;
+.btn-change-photo {
+    display: inline-block; font-size: 0.85em; color: #007bff;
+    text-decoration: none; margin-top: 8px; padding: 6px 12px;
+    border: 1px solid #007bff; border-radius: 5px;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
-.btn-change-photo:hover {
-    text-decoration: none;
-    background-color: #007bff;
-    color: white;
-}
+.btn-change-photo:hover { text-decoration: none; background-color: #007bff; color: white; }
 
-.profile-username {
-    font-size: 1.5em;
-    font-weight: 600;
-    margin: 0 0 8px 0;
-    color: #333;
-}
-.profile-email {
-    font-size: 0.95em;
-    color: #555;
-    word-break: break-all; /* Para quebrar emails longos */
-}
+.profile-username { font-size: 1.5em; font-weight: 600; margin: 0 0 8px 0; color: #333; }
+.profile-email { font-size: 0.95em; color: #555; word-break: break-all; }
 
-.profile-main-content {
-    flex-grow: 1; /* Ocupa o espaço restante */
-    min-width: 300px;
-}
-.profile-section {
-    margin-bottom: 35px;
-    padding-bottom: 25px;
-    border-bottom: 1px solid #f0f0f0;
-}
-.profile-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
+.profile-main-content { flex-grow: 1; min-width: 300px; }
+.profile-section { margin-bottom: 35px; padding-bottom: 25px; border-bottom: 1px solid #f0f0f0; }
+.profile-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .profile-section h3 {
-    font-size: 1.35em;
-    color: #4E7A53; /* Verde para subtítulos das seções */
-    margin-top: 0;
-    margin-bottom: 20px;
-    padding-bottom: 8px;
+    font-size: 1.35em; color: #4E7A53; margin-top: 0;
+    margin-bottom: 20px; padding-bottom: 8px;
 }
 
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 12px 25px; /* Espaço vertical e horizontal */
-    margin-bottom: 20px;
-}
-.info-item {
-    font-size: 1em;
-    color: #454545;
-    line-height: 1.8;
-}
-.info-item strong {
-    color: #333;
-    margin-right: 8px;
-}
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px 25px; margin-bottom: 20px; }
+.info-item { font-size: 1em; color: #454545; line-height: 1.8; }
+.info-item strong { color: #333; margin-right: 8px; }
 
 /* Estilo comum para botões de ação na página de perfil */
-.btn-profile-action {
-    display: block; /* Faz o botão ocupar a largura do container (se o container for flex column) */
-    width: 100%;
-    max-width: 320px; /* Limita a largura máxima dos botões */
-    box-sizing: border-box;
-    padding: 12px 20px;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px; /* Bordas um pouco mais arredondadas */
-    font-size: 0.95em;
-    text-align: center;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 10px; /* Espaço entre botões quando empilhados */
-}
-/* Cores específicas para cada tipo de botão */
-.btn-profile-action.edit, /* Editar Informações */
-.btn-profile-action.change-password { /* Alterar Senha */
-    background-color: #007bff; /* Azul */
-}
-.btn-profile-action.edit:hover,
-.btn-profile-action.change-password:hover {
-    background-color: #0056b3;
-}
-.btn-profile-action { /* Botões de Atividades (Meus Pedidos, Lista de Desejos) */
-    background-color: #6c757d; /* Cinza */
-}
-.btn-profile-action:hover {
-    background-color: #5a6268;
-}
-.btn-profile-action.logout { /* Botão Sair da Conta na página de perfil */
-    background-color: #ffc107; /* Amarelo/Laranja para aviso */
-    color: #212529; /* Texto escuro para contraste */
-}
-.btn-profile-action.logout:hover {
-    background-color: #e0a800;
-}
-
-.activity-buttons, .account-actions-buttons {
-    display: flex;
-    flex-direction: column; /* Empilha os botões */
-    gap: 10px; /* Espaço entre os botões */
-    margin-top: 10px;
-}
-.danger-zone {
-    border-top: 1px solid #fcc; /* Linha de separação mais destacada */
-    padding-top: 20px;
-    margin-top: 20px;
-}
-.danger-zone h3 {
-    color: #d9534f; /* Vermelho para o título da zona de perigo */
-}
-.btn-terminate-account { /* Botão Encerrar Conta */
+.btn-profile-action, /* Meus Pedidos, Lista de Desejos, Sair da Conta (na página de perfil) */
+.btn-edit-profile,   /* Editar Informações (na página de perfil) */
+.btn-change-password { /* Alterar Senha (na página de perfil) */
     display: block; 
     width: 100%; 
-    max-width: 320px;
-    box-sizing: border-box;
-    padding: 12px 20px;
-    background-color: #d9534f; /* Vermelho para ações destrutivas */
-    color: white; 
-    text-decoration: none;
-    border-radius: 8px; 
-    font-size: 0.95em; 
-    text-align: center;
-    font-weight: 500;
-    transition: background-color 0.2s ease; 
-    border: none; 
-    cursor: pointer;
+    max-width: 320px; 
+    box-sizing: border-box; padding: 12px 20px;
+    color: white; text-decoration: none; border-radius: 8px;
+    font-size: 0.95em; text-align: center; font-weight: 500;
+    transition: background-color 0.2s ease; border: none; cursor: pointer;
+    margin-bottom: 10px; 
+}
+.btn-profile-action.edit, /* Editar Informações */
+.btn-change-password { /* Alterar Senha */
+    background-color: #007bff; /* Azul para edição e alteração de senha */
+}
+.btn-profile-action.edit:hover,
+.btn-change-password:hover { background-color: #0056b3; }
+
+.btn-profile-action { /* Botões de Atividades (Meus Pedidos, Lista de Desejos) */
+    background-color: #619559; /* Verde médio */
+}
+.btn-profile-action:hover { background-color: #507a48; }
+
+.btn-profile-action.logout { /* Botão Sair da Conta na página de perfil */
+    background-color: #f0ad4e; /* Laranja/Amarelo para Sair */
+    color: #212529;
+}
+.btn-profile-action.logout:hover { background-color: #ec971f; }
+
+
+.activity-buttons, .account-actions-buttons {
+    display: flex; flex-direction: column; gap: 10px; margin-top: 10px;
+}
+.danger-zone { border-top: 1px solid #fcc; padding-top: 20px; margin-top: 20px; }
+.danger-zone h3 { color: #d9534f; }
+.btn-terminate-account { /* Botão Encerrar Conta */
+    display: block; width: 100%; max-width: 320px; box-sizing: border-box;
+    padding: 12px 20px; background-color: #d9534f; color: white; 
+    text-decoration: none; border-radius: 8px; font-size: 0.95em; 
+    text-align: center; font-weight: 500;
+    transition: background-color 0.2s ease; border: none; cursor: pointer;
     margin-bottom: 10px;
 }
 .btn-terminate-account:hover { background-color: #c9302c; }
 
 /* Estilos para formulários centralizados (Alterar Senha, Editar Perfil) */
-.form-container-centered { max-width: 650px; margin: 20px auto; background-color: #fff; padding:30px 40px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.form-container-centered { max-width: 650px; margin: 0 auto; background-color: #fff; padding:30px 40px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .form-container-centered .section-title { text-align: center; margin-bottom: 25px; }
 .form-container-centered fieldset { border: 1px solid #e0e0e0; padding: 20px; border-radius: 6px; margin-bottom: 25px; }
 .form-container-centered legend { font-weight: 600; color: #4E7A53; padding: 0 10px; font-size: 1.1em; }
 .form-container-centered .input-group-reset label { font-size: 0.9em; color: #555; display: block; margin-bottom: 6px;}
 .form-container-centered .input-group-reset input.form-control,
-.form-container-centered .input-group-reset input.form-control-file {
+.form-container-centered .input-group-reset input.form-control-file,
+.form-container-centered .input-group-reset input[type="password"] /* Para forms de alterar senha */
+{
   width: 100%; padding: 12px 15px; border: 1px solid #dde1e6;
   border-radius: 6px; background-color: #f9f9f9; color: #333;
   font-size: 0.95em; box-sizing: border-box; margin-bottom: 15px;
 }
 .form-container-centered .input-group-reset input.form-control-file { padding: 8px; }
-.form-container-centered .input-group-reset input.form-control:focus { outline: none; border-color: #619559; box-shadow: 0 0 0 3px rgba(97, 149, 89, 0.25); }
+.form-container-centered .input-group-reset input.form-control:focus,
+.form-container-centered .input-group-reset input[type="password"]:focus {
+    outline: none; border-color: #619559;
+    box-shadow: 0 0 0 3px rgba(97, 149, 89, 0.25);
+}
 .form-container-centered .form-errors-summary { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 10px 15px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9em; }
 .form-container-centered .form-errors-summary p { margin: 0; }
 .form-container-centered .form-error-item { margin-top: 5px; }
@@ -222,8 +159,7 @@ body {
 .form-container-centered .form-help-text { font-size: 0.85em; color: #666; margin-top: -10px; margin-bottom:20px; text-align: left; }
 .form-container-centered .form-help-text ul { padding-left: 20px; margin: 5px 0 0 0; }
 
-/* Botão Salvar Alterações na página de Editar Perfil */
-.btn-save-profile {
+.btn-save-profile { /* Botão Salvar Alterações na página de Editar Perfil */
     display: inline-block; padding: 12px 25px; background-color: #4E7A53;
     color: white; text-decoration: none;
     border-radius: 25px; /* BEM ARREDONDADO */
@@ -232,8 +168,7 @@ body {
 }
 .btn-save-profile:hover { background-color: #3E6943; }
 
-/* Botão Cancelar na página de Editar Perfil */
-.btn-cancel-edit {
+.btn-cancel-edit { /* Botão Cancelar na página de Editar Perfil */
     display: inline-block; padding: 12px 25px; background-color: #6c757d;
     color: white; text-decoration: none;
     border-radius: 25px; /* BEM ARREDONDADO */
@@ -250,7 +185,6 @@ body {
     text-align: center;
 }
 .btn-action-secondary:hover { background-color: #5a6268; }
-
 .btn-action-danger {
     display: inline-block; padding: 10px 20px; background-color: #d9534f;
     color: white; text-decoration: none; border-radius: 6px; font-size: 0.95em;
@@ -259,22 +193,20 @@ body {
 }
 .btn-action-danger:hover { background-color: #c9302c; }
 
-
 @media (max-width: 768px) {
     .profile-layout { flex-direction: column; }
     .profile-sidebar { flex-basis: auto; margin-bottom: 25px; }
     .profile-page-container .section-title { text-align: center; }
     .info-grid { grid-template-columns: 1fr; }
-    .btn-profile-action, .btn-terminate-account {
-        margin-left: auto; /* Para centralizar quando max-width é aplicado */
-        margin-right: auto;
+    .btn-profile-action, .btn-terminate-account, .btn-edit-profile, .btn-change-password {
+        margin-left: auto; margin-right: auto; /* Para centralizar */
     }
     .activity-buttons, .account-actions-buttons { align-items: center; }
 }
-
-/* Mensagens locais na página de perfil (se diferentes das globais) */
-.messages-local { list-style-type: none; padding: 0; margin: 0 0 20px 0; }
-.messages-local li { padding: 10px 15px; margin-bottom: 8px; border-radius: 5px; text-align: center; font-size: 0.9em; border: 1px solid transparent; }
-.messages-local .message-success { background-color: #e6ffed; color: #006422; border-color: #b3ffc6; }
-.messages-local .message-error { background-color: #ffe6e6; color: #a00; border-color: #ffb3b3; }
-.messages-local .message-info { background-color: #e6f7ff; color: #005c99; border-color: #b3e0ff; }
+/* Ajustes para inputs de senha dos formulários do Django em mobile (se necessário) */
+@media (max-width: 480px) {
+    .form-container-centered .input-group-reset input.form-control,
+    .form-container-centered .input-group-reset input[type="password"] {
+        font-size: 1em; /* Para melhor legibilidade em mobile */
+    }
+}

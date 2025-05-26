@@ -63,7 +63,7 @@
                 <div class="input-group-reset">
                     <label for="id_foto">Nova Foto de Perfil:</label>
                     <input type="file" name="foto" id="id_foto" class="form-control-file" accept="image/*">
-                    {% if user_obj.userprofile.foto.url %} {# Adapte para seu modelo UserProfile #}
+                    {% if user_obj.userprofile.foto.url %} 
                         <p style="margin-top:5px;"><small>Foto atual: <a href="{{ user_obj.userprofile.foto.url }}" target="_blank">Ver foto</a></small></p>
                     {% elif perfil_extra.foto_url %} 
                         <p style="margin-top:5px;"><small>Foto atual: <img src="{{ perfil_extra.foto_url }}" alt="Foto" style="height:30px; vertical-align:middle;"></small></p>

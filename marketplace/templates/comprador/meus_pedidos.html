@@ -1,0 +1,54 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Meus Pedidos - UniMarket{% endblock title %}
+
+{% block nav_pedidos_active %}active{% endblock %} {# Ativa a aba "Pedidos" no menu principal #}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/meus_pedidos.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="orders-page-container">
+    <h1 class="section-title">Meus Pedidos</h1>
+
+    {% if pedidos %}
+        <div class="order-list">
+            {% for pedido in pedidos %}
+            <div class="order-summary-card status-{{ pedido.status|slugify }}">
+                {# LINK ATUALIZADO para a página de detalhe do pedido #}
+                <a href="{% url 'marketplace:detalhe_pedido' pedido_id=pedido.id %}" class="order-card-link">
+                    <div class="order-card-header">
+                        <h3 class="order-id">Pedido #{{ pedido.id }}</h3>
+                        <span class="order-status status-{{ pedido.status|slugify }}">{{ pedido.status }}</span>
+                    </div>
+                    <div class="order-card-body">
+                        <p class="order-date"><strong>Data:</strong> {{ pedido.data_pedido }}</p>
+                        <p class="order-total"><strong>Total:</strong> R$ {{ pedido.total|floatformat:2 }}</p>
+                        <p class="order-items-summary">
+                            <strong>Itens:</strong> 
+                            {# Mostra a imagem do primeiro item do pedido, se houver e tiver imagem_arquivo_local #}
+                            {% if pedido.itens.0.imagem_arquivo_local %}
+                                <img src="{% static 'accounts/image/'|add:pedido.itens.0.imagem_arquivo_local %}" alt="{{ pedido.itens.0.nome }}" class="order-summary-item-image">
+                            {% elif pedido.itens.0.imagem_url %} {# Fallback para imagem_url se existir no primeiro item #}
+                                <img src="{{ pedido.itens.0.imagem_url }}" alt="{{ pedido.itens.0.nome }}" class="order-summary-item-image">
+                            {% endif %}
+                            {{ pedido.resumo_itens|truncatewords:10 }}
+                        </p>
+                    </div>
+                    <div class="order-card-footer">
+                        Ver Detalhes &rarr;
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-message">
+            <p>Você ainda não fez nenhum pedido.</p>
+            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-primary-action">Começar a Comprar</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}

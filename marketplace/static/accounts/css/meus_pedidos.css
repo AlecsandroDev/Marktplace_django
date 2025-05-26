@@ -1,0 +1,121 @@
+/* marketplace/static/accounts/css/meus_pedidos.css */
+.orders-page-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.orders-page-container .section-title {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #3E6943;
+    text-align: center;
+}
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-summary-card {
+    border: 1px solid #e0e0e0;
+    border-left-width: 5px;
+    border-radius: 8px;
+    background-color: #fdfdfd;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.order-summary-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.order-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 18px 22px;
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #eee;
+}
+
+.order-id {
+    margin: 0;
+    font-size: 1.2em;
+    color: #333;
+    font-weight: 600;
+}
+
+.order-status {
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 15px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 90px;
+    text-align: center;
+}
+
+.order-summary-card.status-concluido { border-left-color: #28a745; }
+.order-summary-card.status-pendente { border-left-color: #ffc107; }
+.order-summary-card.status-cancelado { border-left-color: #dc3545; }
+.order-summary-card.status-concluido .order-status { background-color: #28a745; }
+.order-summary-card.status-pendente .order-status { background-color: #ffc107; color: #333; }
+.order-summary-card.status-cancelado .order-status { background-color: #dc3545; }
+
+.order-card-body p {
+    margin: 6px 0;
+    font-size: 0.95em;
+    color: #555;
+}
+.order-card-body strong { color: #333; }
+.order-items-summary {
+    font-style: italic;
+    color: #777;
+    font-size: 0.9em;
+    display: flex; /* Para alinhar imagem e texto */
+    align-items: center;
+}
+.order-summary-item-image { /* Imagem do primeiro item na lista de pedidos */
+    width: 30px; /* Tamanho pequeno */
+    height: 30px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 8px;
+    border: 1px solid #eee;
+}
+
+
+.order-card-footer {
+    text-align: right;
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #4E7A53;
+    font-weight: 500;
+}
+
+.empty-message { text-align: center; padding: 40px 20px; background-color: #f9f9f9; border-radius: 8px; }
+.empty-message p { font-size: 1.1em; color: #555; margin-bottom: 20px; }
+.btn-primary-action {
+    display: inline-block; padding: 10px 20px; background-color: #4E7A53;
+    color: white; text-decoration: none; border-radius: 6px; font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+.btn-primary-action:hover { background-color: #3E6943; }
+
+@media (max-width: 600px) {
+    .order-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .order-status { align-self: flex-start; }
+}

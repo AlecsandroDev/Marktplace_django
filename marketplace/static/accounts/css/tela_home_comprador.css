@@ -1,9 +1,7 @@
 /* marketplace/static/accounts/css/tela_home_comprador.css */
 html {
     box-sizing: border-box;
-    /* Descomente a linha abaixo se quiser forçar a barra de rolagem sempre, para evitar "pulos" no layout em páginas com conteúdo de tamanhos diferentes.
-       Pode ser útil, mas também pode deixar uma barra de rolagem desnecessária em páginas curtas. Teste para ver o que prefere. */
-    /* overflow-y: scroll; */
+    /* overflow-y: scroll; /* Considerar descomentar se ainda houver "pulos" de layout */
 }
 *, *:before, *:after {
     box-sizing: inherit;
@@ -12,7 +10,7 @@ html {
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
+    background-color: #f0f2f5; /* Cinza bem claro de fundo da página */
     color: #333;
     line-height: 1.6;
 }
@@ -20,41 +18,32 @@ body {
 /* === HEADER / TOPBAR === */
 .topbar {
     background-color: #4E7A53; /* VERDE ESCURO PRINCIPAL */
-    padding: 10px 20px; /* Padding ajustado para um header um pouco mais compacto */
+    padding: 10px 20px; 
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
-    /* justify-content: space-between; /* Comentado para usar flex-grow e margens/gaps */
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
 .logo-area {
-    flex-shrink: 0; /* Não encolhe o logo */
-    margin-right: auto; /* Empurra a search-area e header-actions para a direita */
+    flex-shrink: 0; 
+    margin-right: 20px; 
 }
-.logo-area .logo-text {
-    font-size: 1.7em;
-    font-weight: bold;
-    color: #FFFFFF;
-    text-decoration: none;
-    display: inline-block;
-    min-width: 140px; /* Espaço mínimo para o nome/logo */
-    background-image: url("../image/Captura de tela_24-5-2025_22224_www.figma.com.jpeg"); /* Sua imagem de logo */
-    background-repeat: no-repeat;
-    background-position: left center;
-    background-size: contain; /* Ajusta o tamanho do logo ao container */
-    padding-left: 0px; /* Aumente se o texto sobrepor o logo, ou remova o texto */
-    height: 40px; /* Altura para alinhar com outros itens do header */
-    line-height: 40px; /* Alinha o texto verticalmente se houver */
+.logo-area .logo-text { 
+    font-size: 1.7em; font-weight: bold; color: #FFFFFF; 
+    text-decoration: none; display: inline-block; min-width: 140px;
+    /* background-image: url("../image/seu-logo.png"); /* Descomente e ajuste se tiver um logo */
+    background-repeat: no-repeat; background-position: left center;
+    background-size: contain; height: 40px; line-height: 40px; 
 }
 
 .search-area {
-    flex-grow: 2; /* Deixa a barra de pesquisa ocupar mais espaço proporcionalmente */
-    margin: 0 15px; /* Margens laterais */
+    flex-grow: 2; 
+    margin: 0 15px; 
     max-width: 550px;
-    min-width: 200px; /* Garante que a barra não desapareça */
+    min-width: 150px; 
 }
 .search-form { display: flex; width: 100%; }
 .search-bar {
@@ -73,38 +62,35 @@ body {
 .search-button:hover { background-color: #f0f0f0; }
 .search-icon-img { width: 18px; height: 18px; opacity: 0.7; }
 
+
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 12px; /* Espaçamento entre os botões de ação */
-    flex-shrink: 0; /* Não encolhe esta área */
-    margin-left: auto; /* Empurra esta área para a direita se a logo não tiver margin-right: auto */
+    gap: 12px; 
+    flex-shrink: 0; 
+    margin-left: auto; /* Empurra para a direita */
 }
 .header-action-btn {
     background-color: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    border-radius: 8px;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
+    color: white; border-radius: 8px; padding: 8px; display: flex;
+    align-items: center; justify-content: center; text-decoration: none;
     transition: background-color 0.2s ease;
     position: relative; 
 }
 .header-action-btn:hover { background-color: rgba(255, 255, 255, 0.3); }
-.header-action-btn img { width: 24px; height: 24px; display: block; } /* Tamanho padrão para ícones do header */
+.header-action-btn img { width: 24px; height: 24px; display: block; }
 
 .header-action-btn.profile-btn img.header-profile-icon,
 .header-action-btn.profile-btn img.header-profile-pic {
     filter: none; 
     border-radius: 50%;
     object-fit: cover;
-    width: 28px; /* Tamanho um pouco maior para o ícone de perfil */
+    width: 28px; 
     height: 28px;
+    border: 1px solid rgba(255,255,255,0.5); 
 }
-.header-action-btn:not(.profile-btn) img { filter: brightness(0) invert(1); }
+.header-action-btn:not(.profile-btn) img { filter: brightness(0) invert(1); } 
 .header-action-btn.active-icon { background-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 5px rgba(255,255,255,0.5); }
 
 .cart-icon-link { position: relative; }
@@ -114,16 +100,13 @@ body {
     top: -5px; right: -5px; line-height: 1; font-weight: bold;
     border: 1px solid white;
 }
-
 .profile-action { display: flex; align-items: center; }
 /* Link de Sair em texto foi removido do HTML do header */
 
 
 /* Menu de Navegação (Abas) */
 .main-navigation-tabs {
-    display: flex;
-    justify-content: center;
-    padding: 8px 0;
+    display: flex; justify-content: center; padding: 8px 0;
     background-color: #619559; /* VERDE MÉDIO */
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
     flex-wrap: wrap;
@@ -200,7 +183,7 @@ body {
     line-height: 0; display: flex; align-items: center; justify-content: center;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
-.btn-wishlist img { width: 20px; height: 20px; display: block; } /* Tamanho do ícone de bookmark nos cards */
+.btn-wishlist img { width: 20px; height: 20px; display: block; }
 .btn-wishlist:hover { background-color: #f0f0f0; border-color: #bbb; }
 
 /* ESTILOS PARA LISTA DE DESEJOS */
@@ -226,32 +209,42 @@ body {
 .main-footer-home { text-align: center; padding: 25px; background-color: #333; color: #ccc; font-size: 0.9em; margin-top: 40px; }
 
 /* Responsividade */
-@media (max-width: 992px) { /* Tablets e Desktops menores */
-    .search-area { max-width: 400px; margin: 0 10px; }
-    .logo-area .logo-text { font-size: 1.5em; min-width: 120px; }
-    .header-action-btn img { width: 22px; height: 22px; }
+@media (max-width: 992px) {
+    .search-area { max-width: 300px; margin: 0 10px; }
+    .logo-area .logo-text { font-size: 1.5em; min-width: auto; } /* Ajusta para logo não ser muito grande */
+    .header-actions { gap: 8px; }
+    .header-action-btn img { width: 20px; height: 20px; }
     .header-action-btn.profile-btn img.header-profile-icon,
-    .header-action-btn.profile-btn img.header-profile-pic { width: 26px; height: 26px; }
+    .header-action-btn.profile-btn img.header-profile-pic { width: 24px; height: 24px; }
 }
-@media (max-width: 768px) { /* Mobile */
-    .topbar { flex-direction: column; gap: 10px; padding: 10px 15px; }
-    .logo-area { width: 100%; text-align: center; margin-right: 0; margin-bottom: 5px; }
-    .search-area { order: 3; width: 100%; max-width: none; margin: 0;}
-    .header-actions { order: 2; width:100%; justify-content: space-around; margin-bottom:10px; margin-left: 0; }
+@media (max-width: 768px) {
+    .topbar { flex-direction: column; gap: 10px; padding: 10px 15px; } /* Reduzido gap */
+    .logo-area { width: 100%; text-align: center; margin-right: 0; margin-bottom: 8px; }
+    .search-area { order: 2; width: 100%; max-width: none; margin: 0 0 8px 0;} /* search antes de actions */
+    .header-actions { order: 3; width:100%; justify-content: space-around; margin-bottom:0; }
     .main-navigation-tabs { font-size: 0.9em; flex-wrap: wrap; justify-content: center; }
     .nav-tab { padding: 8px 15px; margin: 3px; }
     .container-principal-home, .wishlist-page-container { margin-top: 20px; padding: 0 10px; }
-    .section-title { font-size: 1.4em; margin-bottom: 15px; }
-    .filtro-item { width: calc(50% - 12px); min-height: 180px; padding: 10px;}
+    .filtros-section { padding: 15px; margin-bottom: 20px;}
+    .section-title, .filtros-section h2, .produtos-section h2, .wishlist-page-container .section-title { font-size: 1.4em; margin-bottom: 15px; }
+    .filtro-card { width: calc(50% - 12px); min-height: 180px; padding: 10px;}
     .filtro-visual-container { width: 80px; height: 80px; margin-bottom: 10px;}
+    .filtro-icon-fallback { font-size: 3.5em; }
     .produto-grid { grid-template-columns: 1fr; }
+    .produto-card-actions { flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; }
+    .btn-adicionar-carrinho { width: auto; flex-grow: 1; font-size: 0.85em; padding: 8px 10px; }
+    .btn-wishlist.card-action { width: auto; padding: 8px; }
+    .btn-wishlist.card-action img { width: 18px; height: 18px; }
 }
-@media (max-width: 480px) { /* Mobile menor */
-    .filtro-item { width: calc(100% - 10px); min-height: 170px; }
-    .section-title { font-size: 1.3em; }
+@media (max-width: 480px) {
+    .filtro-card { width: calc(100% - 10px); min-height: 170px; }
+    .filtro-visual-container { width: 70px; height: 70px; }
+    .filtro-icon-fallback { font-size: 3em; }
+    .section-title, .wishlist-page-container .section-title { font-size: 1.3em; }
     .header-action-btn img { width: 20px; height: 20px; }
     .header-action-btn.profile-btn img.header-profile-icon,
     .header-action-btn.profile-btn img.header-profile-pic { width: 24px; height: 24px; }
     .produto-card-actions { flex-direction: column; align-items: stretch; gap: 8px;}
-    .btn-adicionar-carrinho, .btn-wishlist { width: 100%; margin-bottom: 5px; }
+    .btn-adicionar-carrinho, .btn-wishlist.card-action { width: 100%; margin-bottom: 5px; }
+    .btn-wishlist.card-action { justify-content: center; }
 }
