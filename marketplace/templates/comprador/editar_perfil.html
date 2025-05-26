@@ -1,0 +1,84 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Editar Perfil - UniMarket{% endblock title %}
+
+{% block nav_perfil_active %}active{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/perfil_comprador.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="profile-page-container">
+    <h1 class="section-title">Editar Perfil</h1>
+
+    <div class="form-container-centered" style="max-width: 650px; margin: 20px auto;">
+        <form method="POST" action="{% url 'marketplace:editar_perfil' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if messages %}
+                <ul class="messages-global" style="margin-bottom: 20px;">
+                    {% for message in messages %}
+                        <li class="message-{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <fieldset>
+                <legend>Informações Básicas</legend>
+                <div class="input-group-reset">
+                    <label for="id_first_name">Nome Completo:</label>
+                    <input type="text" name="first_name" value="{{ user_obj.first_name|default:'' }}" id="id_first_name" class="form-control" required>
+                </div>
+                <div class="input-group-reset">
+                    <label for="id_email">Email (Login):</label>
+                    <input type="email" name="email" value="{{ user_obj.email|default:'' }}" id="id_email" class="form-control" required>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Informações Adicionais (Simulação)</legend>
+                 <p class="form-instructions" style="font-size:0.85em; color:#777; margin-bottom:15px;">Nota: A alteração destes campos abaixo é simulada e não será salva permanentemente até a integração com o banco de dados (UserProfile) ser finalizada.</p>
+                <div class="input-group-reset">
+                    <label for="id_idade">Idade:</label>
+                    <input type="number" name="idade" value="{{ perfil_extra.idade|default_if_none:'' }}" placeholder="Sua idade" id="id_idade" class="form-control">
+                </div>
+                <div class="input-group-reset">
+                    <label for="id_cpf">CPF:</label>
+                    <input type="text" name="cpf" value="{{ perfil_extra.cpf|default_if_none:'' }}" placeholder="Seu CPF" id="id_cpf" class="form-control">
+                </div>
+                <div class="input-group-reset">
+                    <label for="id_curso">Curso:</label>
+                    <input type="text" name="curso" value="{{ perfil_extra.curso|default_if_none:'' }}" placeholder="Seu curso" id="id_curso" class="form-control">
+                </div>
+                <div class="input-group-reset">
+                    <label for="id_ra">RA:</label>
+                    <input type="text" name="ra" value="{{ perfil_extra.ra|default_if_none:'' }}" placeholder="Seu RA" id="id_ra" class="form-control">
+                </div>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Foto de Perfil (Upload Simulado)</legend>
+                <div class="input-group-reset">
+                    <label for="id_foto">Nova Foto de Perfil:</label>
+                    <input type="file" name="foto" id="id_foto" class="form-control-file" accept="image/*">
+                    {% if user_obj.userprofile.foto.url %} {# Adapte para seu modelo UserProfile #}
+                        <p style="margin-top:5px;"><small>Foto atual: <a href="{{ user_obj.userprofile.foto.url }}" target="_blank">Ver foto</a></small></p>
+                    {% elif perfil_extra.foto_url %} 
+                        <p style="margin-top:5px;"><small>Foto atual: <img src="{{ perfil_extra.foto_url }}" alt="Foto" style="height:30px; vertical-align:middle;"></small></p>
+                    {% else %}
+                        <p style="margin-top:5px;"><small>Nenhuma foto de perfil definida.</small></p>
+                    {% endif %}
+                    <p class="form-instructions" style="font-size:0.85em; color:#777; margin-top:5px;">O upload e salvamento de fotos ainda não está funcional.</p>
+                </div>
+            </fieldset>
+            
+            <div style="margin-top: 25px; display:flex; gap:15px; justify-content:flex-end; flex-wrap:wrap;">
+                <a href="{% url 'marketplace:perfil_comprador' %}" class="btn-cancel-edit">Cancelar</a>
+                <button type="submit" class="btn-save-profile">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

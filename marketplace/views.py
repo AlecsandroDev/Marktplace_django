@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.http import Http404
@@ -37,6 +37,15 @@ _filter_categorias_example = [
 
 _simulacao_ids_favoritados = [1, 4] 
 
+# Placeholder para dados extras do perfil do usuário (simulando o que viria do UserProfile)
+_simulacao_perfil_extra_usuario_atual = {
+    'idade': '21', 
+    'cpf': '111.222.333-44',   
+    'curso': 'Ciência da Computação', 
+    'ra': '654321',    
+    'foto_url': None 
+}
+
 def _update_cart_item_count(request):
     carrinho = request.session.get('carrinho', {})
     request.session['num_itens_carrinho'] = len(carrinho)
@@ -72,41 +81,54 @@ def admin_login(request):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_dashboard(request): return render(request, "admin/dashboard.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_anuncios(request): return render(request, "admin/anuncios.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_usuarios(request): return render(request, "admin/usuarios.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_usuario(request): return render(request, "admin/gerenciar_usuario.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_reportes(request): return render(request, "admin/reportes.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_reporte(request): return render(request, "admin/gerenciar_reporte.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_reportes_arquivados(request): return render(request, "admin/reportes_arquivados.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_reporte_arquivado(request): return render(request, "admin/gerenciar_reporte_arquivado.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_pedidos(request): return render(request, "admin/pedidos.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_pedido(request): return render(request, "admin/gerenciar_pedido.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_pedidos_finalizados(request): return render(request, "admin/pedidos_finalizados.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def admin_gerenciar_pedido_finalizado(request): return render(request, "admin/gerenciar_pedido_finalizado.html")
+
 @login_required
 def admin_logout(request): logout(request); return redirect('marketplace:login')
+
 
 # ========================
 # VIEWS DO COMPRADOR
@@ -154,8 +176,13 @@ def comprador_cadastro(request):
         try:
             user = User.objects.create_user(username=email, email=email, password=senha)
             user.first_name = nome; user.save(); 
-            login(request, user)
-            _update_cart_item_count(request)
+            # SIMULAÇÃO: Atualiza dados extras "globais" com os do último usuário cadastrado
+            global _simulacao_perfil_extra_usuario_atual
+            _simulacao_perfil_extra_usuario_atual['idade'] = idade
+            _simulacao_perfil_extra_usuario_atual['cpf'] = cpf
+            _simulacao_perfil_extra_usuario_atual['curso'] = curso
+            _simulacao_perfil_extra_usuario_atual['ra'] = ra
+            login(request, user); _update_cart_item_count(request)
             messages.success(request, 'Cadastro realizado com sucesso! Você já está logado.')
             return redirect('marketplace:pagina_inicial_comprador')
         except Exception as e:
@@ -164,61 +191,37 @@ def comprador_cadastro(request):
 
 @login_required
 def home_comprador(request):
-    if request.user.is_staff:
-        logout(request); messages.error(request, "Área restrita a compradores."); return redirect('marketplace:landing_page')
-    nome_usuario = request.user.first_name or request.user.username
-    selected_category_id = request.GET.get('categoria')
-    search_query = request.GET.get('q_search', '').strip() 
-    product_list_to_display = list(_placeholder_all_products) 
-    if selected_category_id and selected_category_id != 'todos':
-        product_list_to_display = [p for p in product_list_to_display if p.get('categoria_id') == selected_category_id]
+    if request.user.is_staff: logout(request); messages.error(request, "Área restrita a compradores."); return redirect('marketplace:landing_page')
+    nome_usuario = request.user.first_name or request.user.username; selected_category_id = request.GET.get('categoria')
+    search_query = request.GET.get('q_search', '').strip(); product_list_to_display = list(_placeholder_all_products)
+    if selected_category_id and selected_category_id != 'todos': product_list_to_display = [p for p in product_list_to_display if p.get('categoria_id') == selected_category_id]
     if search_query:
         search_results = []
         for p in product_list_to_display:
-            if (search_query.lower() in p.get('nome', '').lower() or
-                search_query.lower() in p.get('descricao_longa', '').lower() or
-                search_query.lower() in p.get('vendedor_nome', '').lower()):
-                search_results.append(p)
+            if (search_query.lower() in p.get('nome', '').lower() or search_query.lower() in p.get('descricao_longa', '').lower() or search_query.lower() in p.get('vendedor_nome', '').lower()): search_results.append(p)
         product_list_to_display = search_results
     product_list_to_display = _enrich_product_data(product_list_to_display, request.session, _simulacao_ids_favoritados)
-    context = {
-        'nome_usuario': nome_usuario, 'filter_categorias': _filter_categorias_example,
-        'product_list': product_list_to_display, 'selected_category_id': selected_category_id,
-        'search_query': search_query,
-    }
+    context = {'nome_usuario': nome_usuario, 'filter_categorias': _filter_categorias_example, 'product_list': product_list_to_display, 'selected_category_id': selected_category_id, 'search_query': search_query }
     return render(request, 'comprador/home_comprador.html', context)
 
 @login_required
 def pagina_busca_produto(request):
-    if request.user.is_staff:
-        logout(request); messages.error(request, "Área restrita a compradores."); return redirect('marketplace:landing_page')
-    nome_usuario = request.user.first_name or request.user.username
-    selected_category_id = request.GET.get('categoria')
-    search_query = request.GET.get('q_search', '').strip()
-    current_product_list = []; selected_category_name = None
+    if request.user.is_staff: logout(request); messages.error(request, "Área restrita a compradores."); return redirect('marketplace:landing_page')
+    nome_usuario = request.user.first_name or request.user.username; selected_category_id = request.GET.get('categoria')
+    search_query = request.GET.get('q_search', '').strip(); current_product_list = []; selected_category_name = None
     if selected_category_id and selected_category_id != 'todos':
         for cat in _filter_categorias_example:
             if cat['id'] == selected_category_id: selected_category_name = cat['nome_exibicao']; break
     if search_query:
         current_product_list = list(_placeholder_all_products)
-        if selected_category_id and selected_category_id != 'todos':
-            current_product_list = [p for p in current_product_list if p.get('categoria_id') == selected_category_id]
+        if selected_category_id and selected_category_id != 'todos': current_product_list = [p for p in current_product_list if p.get('categoria_id') == selected_category_id]
         search_results = []
         for p in current_product_list:
-            if (search_query.lower() in p.get('nome', '').lower() or
-                search_query.lower() in p.get('descricao_longa', '').lower() or
-                search_query.lower() in p.get('vendedor_nome', '').lower()):
-                search_results.append(p)
+            if (search_query.lower() in p.get('nome', '').lower() or search_query.lower() in p.get('descricao_longa', '').lower() or search_query.lower() in p.get('vendedor_nome', '').lower()): search_results.append(p)
         current_product_list = search_results
-    elif selected_category_id and selected_category_id != 'todos':
-        current_product_list = [p for p in _placeholder_all_products if p.get('categoria_id') == selected_category_id]
-    
+    elif selected_category_id and selected_category_id != 'todos': current_product_list = [p for p in _placeholder_all_products if p.get('categoria_id') == selected_category_id]
     current_product_list = _enrich_product_data(current_product_list, request.session, _simulacao_ids_favoritados)
-    context = {
-        'nome_usuario': nome_usuario, 'filter_categorias': _filter_categorias_example,
-        'product_list': current_product_list, 'search_query': search_query,
-        'selected_category_id': selected_category_id, 'selected_category_name': selected_category_name,
-    }
+    context = {'nome_usuario': nome_usuario, 'filter_categorias': _filter_categorias_example, 'product_list': current_product_list, 'search_query': search_query, 'selected_category_id': selected_category_id, 'selected_category_name': selected_category_name}
     return render(request, 'comprador/pagina_busca_produto.html', context)
 
 @login_required
@@ -227,35 +230,23 @@ def detalhes_produto(request, produto_id):
     for p in _placeholder_all_products: 
         if p.get('id') == produto_id: produto_encontrado_original = p; break
     if not produto_encontrado_original: raise Http404("Produto não encontrado.")
-    
     produto_encontrado_list = _enrich_product_data([produto_encontrado_original], request.session, _simulacao_ids_favoritados)
     produto_encontrado = produto_encontrado_list[0] if produto_encontrado_list else None
     if not produto_encontrado: raise Http404("Erro ao processar dados do produto.")
-        
-    context = {
-        'produto': produto_encontrado,
-        'nome_usuario': request.user.first_name or request.user.username,
-    }
+    context = {'produto': produto_encontrado, 'nome_usuario': request.user.first_name or request.user.username}
     return render(request, 'comprador/detalhes_produto.html', context)
 
-# --- VIEWS PARA LISTA DE DESEJOS ---
 @login_required
 def adicionar_aos_desejos(request, produto_id):
-    global _simulacao_ids_favoritados
-    produto_id = int(produto_id)
-    if produto_id not in _simulacao_ids_favoritados:
-        _simulacao_ids_favoritados.append(produto_id)
-        messages.success(request, "Produto adicionado à sua lista de desejos!")
+    global _simulacao_ids_favoritados; produto_id = int(produto_id)
+    if produto_id not in _simulacao_ids_favoritados: _simulacao_ids_favoritados.append(produto_id); messages.success(request, "Produto adicionado à lista de desejos!")
     else: messages.info(request, "Este produto já está na sua lista de desejos.")
     return redirect(request.META.get('HTTP_REFERER', 'marketplace:lista_desejos'))
 
 @login_required
 def remover_dos_desejos(request, produto_id):
-    global _simulacao_ids_favoritados
-    produto_id = int(produto_id)
-    if produto_id in _simulacao_ids_favoritados:
-        _simulacao_ids_favoritados.remove(produto_id)
-        messages.success(request, "Produto removido da sua lista de desejos!")
+    global _simulacao_ids_favoritados; produto_id = int(produto_id)
+    if produto_id in _simulacao_ids_favoritados: _simulacao_ids_favoritados.remove(produto_id); messages.success(request, "Produto removido da lista de desejos!")
     else: messages.info(request, "Este produto não estava na sua lista de desejos.")
     return redirect(request.META.get('HTTP_REFERER', 'marketplace:lista_desejos'))
 
@@ -268,14 +259,12 @@ def lista_desejos(request):
     context = {'nome_usuario': nome_usuario, 'produtos_favoritados': produtos_favoritados_list }
     return render(request, 'comprador/lista_desejos.html', context)
 
-# --- VIEWS PARA CARRINHO DE COMPRAS ---
 @login_required
 def adicionar_ao_carrinho(request, produto_id):
     produto_selecionado = None
     for p in _placeholder_all_products:
         if p.get('id') == produto_id: produto_selecionado = p; break
-    if not produto_selecionado:
-        messages.error(request, "Produto não encontrado!"); return redirect(request.META.get('HTTP_REFERER', 'marketplace:pagina_inicial_comprador'))
+    if not produto_selecionado: messages.error(request, "Produto não encontrado!"); return redirect(request.META.get('HTTP_REFERER', 'marketplace:pagina_inicial_comprador'))
     carrinho = request.session.get('carrinho', {}); item_id_str = str(produto_id); quantidade_form = 1
     if request.method == 'POST':
         try:
@@ -287,36 +276,25 @@ def adicionar_ao_carrinho(request, produto_id):
         else: carrinho[item_id_str]['quantidade'] = carrinho[item_id_str].get('quantidade', 0) + 1 
         messages.success(request, f"'{produto_selecionado['nome']}' atualizado no carrinho.")
     else:
-        carrinho[item_id_str] = {
-            'id': produto_selecionado['id'], 'nome': produto_selecionado['nome'],
-            'preco': float(produto_selecionado['preco']), 'quantidade': quantidade_form,
-            'imagem': produto_selecionado.get('imagem_arquivo_local') or produto_selecionado.get('imagem_url'),
-            'tipo_imagem': 'local' if produto_selecionado.get('imagem_arquivo_local') else 'url'
-        }
+        carrinho[item_id_str] = {'id': produto_selecionado['id'], 'nome': produto_selecionado['nome'], 'preco': float(produto_selecionado['preco']), 'quantidade': quantidade_form, 'imagem': produto_selecionado.get('imagem_arquivo_local') or produto_selecionado.get('imagem_url'), 'tipo_imagem': 'local' if produto_selecionado.get('imagem_arquivo_local') else 'url'}
         messages.success(request, f"'{produto_selecionado['nome']}' adicionado ao carrinho!")
-    request.session['carrinho'] = carrinho
-    _update_cart_item_count(request)
-    request.session.modified = True 
+    request.session['carrinho'] = carrinho; _update_cart_item_count(request); request.session.modified = True 
     return redirect(request.META.get('HTTP_REFERER', 'marketplace:pagina_inicial_comprador'))
 
 @login_required
 def remover_do_carrinho(request, item_id):
-    carrinho = request.session.get('carrinho', {})
-    item_id_str = str(item_id)
+    carrinho = request.session.get('carrinho', {}); item_id_str = str(item_id)
     if item_id_str in carrinho:
         nome_produto_removido = carrinho[item_id_str].get('nome', 'Produto')
-        del carrinho[item_id_str]
-        request.session['carrinho'] = carrinho
-        _update_cart_item_count(request)
-        request.session.modified = True
+        del carrinho[item_id_str]; request.session['carrinho'] = carrinho
+        _update_cart_item_count(request); request.session.modified = True
         messages.success(request, f"'{nome_produto_removido}' removido do carrinho.")
     else: messages.info(request, "Item não encontrado no carrinho.")
     return redirect('marketplace:ver_carrinho')
 
 @login_required
 def ver_carrinho(request):
-    carrinho_session = request.session.get('carrinho', {}); 
-    itens_carrinho = []; total_carrinho = 0;
+    carrinho_session = request.session.get('carrinho', {}); itens_carrinho = []; total_carrinho = 0;
     _update_cart_item_count(request) 
     for item_id_str, item_data in carrinho_session.items():
         try:
@@ -325,56 +303,78 @@ def ver_carrinho(request):
                 if item_id_str in request.session.get('carrinho', {}): del request.session['carrinho'][item_id_str]; request.session.modified = True
                 continue
             subtotal = preco * quantidade
-            itens_carrinho.append({
-                'id': item_data.get('id'), 'nome': item_data.get('nome'),
-                'preco_unitario': preco, 'quantidade': quantidade,
-                'subtotal': subtotal, 'imagem': item_data.get('imagem'), 
-                'tipo_imagem': item_data.get('tipo_imagem')
-            })
+            itens_carrinho.append({'id': item_data.get('id'), 'nome': item_data.get('nome'), 'preco_unitario': preco, 'quantidade': quantidade, 'subtotal': subtotal, 'imagem': item_data.get('imagem'), 'tipo_imagem': item_data.get('tipo_imagem')})
             total_carrinho += subtotal
         except (ValueError, TypeError):
             messages.error(request, f"Item inválido no carrinho: ID {item_id_str}")
             if item_id_str in request.session.get('carrinho', {}): del request.session['carrinho'][item_id_str]; request.session.modified = True
             continue
-    context = {
-        'itens_carrinho': itens_carrinho, 'total_carrinho': total_carrinho,
-        'nome_usuario': request.user.first_name or request.user.username,
-    }
+    context = {'itens_carrinho': itens_carrinho, 'total_carrinho': total_carrinho, 'nome_usuario': request.user.first_name or request.user.username}
     return render(request, 'comprador/carrinho.html', context)
 
-# NOVA VIEW PARA O PERFIL DO COMPRADOR
+# --- VIEWS PARA PERFIL DO COMPRADOR E AÇÕES RELACIONADAS ---
 @login_required
 def perfil_comprador(request):
-    if request.user.is_staff:
-        logout(request)
-        messages.error(request, "Página não disponível para administradores.")
-        return redirect('marketplace:landing_page')
-
     user = request.user
-    perfil_extra = {
-        'idade': 'N/D (Exemplo: 20)', 
-        'cpf': 'N/D (Ex: 000.000.000-00)',   
-        'curso': 'N/D (Ex: Engenharia de Software)', 
-        'ra': 'N/D (Ex: 123456)',    
-        'foto_url': None 
-    }
-    # Quando o modelo UserProfile existir:
-    # try:
-    #     user_profile = request.user.userprofile 
-    #     perfil_extra['idade'] = user_profile.idade
-    #     perfil_extra['cpf'] = user_profile.cpf
-    #     perfil_extra['curso'] = user_profile.curso
-    #     perfil_extra['ra'] = user_profile.ra
-    #     if user_profile.foto: perfil_extra['foto_url'] = user_profile.foto.url
-    # except UserProfile.DoesNotExist: pass
-
+    perfil_extra_data = copy.deepcopy(_simulacao_perfil_extra_usuario_atual)
+    # Simula o URL da foto (se UserProfile existisse e tivesse uma foto)
+    # if hasattr(user, 'userprofile') and user.userprofile.foto:
+    #     perfil_extra_data['foto_url'] = user.userprofile.foto.url
+    # else: # Se não tem UserProfile ou foto, usa None para o template mostrar o user.png padrão
+    #     perfil_extra_data['foto_url'] = None 
+    
     context = {
-        'nome_usuario': user.first_name or user.username,
-        'email_usuario': user.email,
-        'perfil_extra': perfil_extra,
+        'user_obj': user,
+        'perfil_extra': perfil_extra_data,
     }
     return render(request, 'comprador/perfil.html', context)
 
+@login_required
+def editar_perfil(request):
+    user = request.user
+    global _simulacao_perfil_extra_usuario_atual 
+
+    if request.method == 'POST':
+        user.first_name = request.POST.get('first_name', user.first_name).strip()
+        new_email = request.POST.get('email', user.email).strip()
+        email_changed = False
+        if new_email != user.email:
+            if User.objects.filter(email=new_email).exclude(username=user.username).exists():
+                messages.error(request, 'Este email já está em uso por outra conta.')
+            else:
+                user.email = new_email
+                user.username = new_email 
+                email_changed = True
+        user.save()
+        if email_changed: messages.info(request, "Email (e login) atualizado com sucesso!")
+        
+        _simulacao_perfil_extra_usuario_atual['idade'] = request.POST.get('idade', _simulacao_perfil_extra_usuario_atual['idade'])
+        _simulacao_perfil_extra_usuario_atual['cpf'] = request.POST.get('cpf', _simulacao_perfil_extra_usuario_atual['cpf'])
+        _simulacao_perfil_extra_usuario_atual['curso'] = request.POST.get('curso', _simulacao_perfil_extra_usuario_atual['curso'])
+        _simulacao_perfil_extra_usuario_atual['ra'] = request.POST.get('ra', _simulacao_perfil_extra_usuario_atual['ra'])
+        
+        if 'foto' in request.FILES:
+            # Lógica de upload aqui quando UserProfile e MEDIA_ROOT estiverem configurados
+            # _simulacao_perfil_extra_usuario_atual['foto_url'] = "caminho/para/nova_foto_simulada.png" # Simulação
+            messages.info(request, "Nova foto de perfil recebida (simulação - não salva permanentemente).")
+        
+        messages.success(request, "Nome e email atualizados! Outras informações e foto são simuladas.")
+        return redirect('marketplace:perfil_comprador')
+    
+    perfil_extra_data_form = copy.deepcopy(_simulacao_perfil_extra_usuario_atual)
+    context = { 'user_obj': user, 'perfil_extra': perfil_extra_data_form }
+    return render(request, 'comprador/editar_perfil.html', context)
+
+@login_required
+def encerrar_conta(request):
+    if request.method == 'POST':
+        # user_to_delete = User.objects.get(pk=request.user.pk) # Pega o usuário atual para "deletar"
+        logout(request) 
+        # user_to_delete.is_active = False 
+        # user_to_delete.save() 
+        messages.success(request, "Sua conta foi marcada para encerramento (Simulação). Você foi desconectado.")
+        return redirect('marketplace:landing_page')
+    return render(request, 'comprador/perfil_encerrar_conta_confirm.html')
 
 @login_required
 def comprador_logout(request):

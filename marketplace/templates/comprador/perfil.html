@@ -1,9 +1,9 @@
 {% extends 'comprador/base_comprador.html' %}
 {% load static %}
 
-{% block title %}Meu Perfil - {{ nome_usuario }}{% endblock title %}
+{% block title %}Meu Perfil - {{ user_obj.first_name|default:user_obj.username }}{% endblock title %}
 
-{% block nav_perfil_active %}active{% endblock %} {# Ativa a aba "Perfil" no menu #}
+{% block nav_perfil_active %}active{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'accounts/css/perfil_comprador.css' %}">
@@ -13,47 +13,57 @@
 <div class="profile-page-container">
     <h1 class="section-title">Meu Perfil</h1>
 
+    {% if messages %} {# Mensagens específicas para esta página, como sucesso ao editar #}
+        <ul class="messages-global" style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <li class="message-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <div class="profile-layout">
         <aside class="profile-sidebar">
             <div class="profile-picture-area">
-                {% if perfil_extra.foto_url %}
-                    <img src="{{ perfil_extra.foto_url }}" alt="Foto de Perfil" class="profile-pic">
+                {% if perfil_extra.foto_url %} {# Vem do contexto da view 'perfil_comprador' #}
+                    <img src="{{ perfil_extra.foto_url }}" alt="Foto de Perfil de {{ user_obj.first_name }}" class="profile-pic">
                 {% else %}
-                    <img src="{% static 'accounts/image/user_placeholder_large.png' %}" alt="Foto de Perfil Padrão" class="profile-pic"> 
-                    {# Crie user_placeholder_large.png ou ajuste para user.png #}
+                    <img src="{% static 'accounts/image/user.png' %}" alt="Foto de Perfil Padrão" class="profile-pic default-profile-pic"> 
                 {% endif %}
-                <a href="#" class="btn-change-photo">Alterar Foto</a> {# Funcionalidade futura #}
+                <a href="{% url 'marketplace:editar_perfil' %}" class="btn-change-photo">Alterar Foto / Dados</a>
             </div>
-            <h2 class="profile-username">{{ nome_usuario }}</h2>
-            <p class="profile-email">{{ email_usuario }}</p>
+            <h2 class="profile-username">{{ user_obj.first_name|default:user_obj.username }}</h2>
+            <p class="profile-email">{{ user_obj.email }}</p>
         </aside>
 
         <section class="profile-main-content">
             <div class="profile-section">
                 <h3>Informações Pessoais</h3>
                 <div class="info-grid">
-                    <div class="info-item"><strong>Nome Completo:</strong> <span>{{ nome_usuario }}</span></div>
-                    <div class="info-item"><strong>Email:</strong> <span>{{ email_usuario }}</span></div>
+                    <div class="info-item"><strong>Nome Completo:</strong> <span>{{ user_obj.first_name|default:"Não informado" }}</span></div>
+                    <div class="info-item"><strong>Email:</strong> <span>{{ user_obj.email }}</span></div>
                     <div class="info-item"><strong>Idade:</strong> <span>{{ perfil_extra.idade }}</span></div>
                     <div class="info-item"><strong>CPF:</strong> <span>{{ perfil_extra.cpf }}</span></div>
                     <div class="info-item"><strong>Curso:</strong> <span>{{ perfil_extra.curso }}</span></div>
                     <div class="info-item"><strong>RA:</strong> <span>{{ perfil_extra.ra }}</span></div>
                 </div>
-                <a href="#" class="btn-edit-profile">Editar Informações</a> {# Funcionalidade futura #}
-            </div>
-
-            <div class="profile-section">
-                <h3>Segurança da Conta</h3>
-                <a href="{% url 'marketplace:password_change' %}" class="btn-change-password">Alterar Senha</a>
+                <a href="{% url 'marketplace:editar_perfil' %}" class="btn-profile-action edit">Editar Informações</a>
             </div>
 
             <div class="profile-section">
                 <h3>Minhas Atividades</h3>
-                <ul class="activity-links">
-                    <li><a href="#">Meus Pedidos</a></li> {# Futuramente: {% url 'marketplace:meus_pedidos' %} #}
-                    <li><a href="{% url 'marketplace:lista_desejos' %}">Minha Lista de Desejos</a></li>
-                    {# Adicione mais links relevantes aqui #}
-                </ul>
+                <div class="activity-buttons">
+                    <a href="#" class="btn-profile-action">Meus Pedidos</a> {# Futuramente: {% url 'marketplace:meus_pedidos' %} #}
+                    <a href="{% url 'marketplace:lista_desejos' %}" class="btn-profile-action">Minha Lista de Desejos</a>
+                </div>
+            </div>
+            
+            <div class="profile-section">
+                <h3>Segurança e Conta</h3>
+                <div class="account-actions-buttons">
+                    <a href="{% url 'marketplace:password_change' %}" class="btn-profile-action change-password">Alterar Senha</a>
+                    <a href="{% url 'marketplace:comprador_logout' %}" class="btn-profile-action logout">Sair da Conta</a>
+                    <a href="{% url 'marketplace:encerrar_conta' %}" class="btn-terminate-account">Encerrar Minha Conta</a>
+                </div>
             </div>
         </section>
     </div>

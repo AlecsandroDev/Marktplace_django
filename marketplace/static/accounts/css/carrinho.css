@@ -1,16 +1,15 @@
 /* marketplace/static/accounts/css/carrinho.css */
 
-/* Removidas regras de body e html, pois são herdadas do base via tela_home_comprador.css */
+/* Removidas regras de body e html daqui, pois são herdadas do tela_home_comprador.css via base.html */
 
 .cart-page-container {
     max-width: 1000px; margin: 30px auto; padding: 20px;
     background-color: #fff; border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
-.cart-page-container .section-title { /* Estiliza o h1 dentro do cart-page-container */
+.cart-page-container .section-title {
     margin-top: 0; color: #3E6943; text-align: center; margin-bottom: 30px;
-    font-size: 1.8em; /* Consistente com outros .section-title */
-    font-weight: 600;
+    font-size: 1.8em; font-weight: 600;
 }
 
 .cart-items-table { width: 100%; margin-bottom: 30px; border-collapse: collapse; }
@@ -26,24 +25,17 @@
 .action-col { flex-basis: 4%; text-align: center; }
 
 .cart-item-link { text-decoration: none; color: inherit; display: flex; align-items: center; width: 100%; }
-.cart-item-link:hover .cart-item-name { color: #4E7A53; }
+.cart-item-link:hover .cart-item-name { color: #4E7A53; } /* Mantém hover no nome */
 .cart-item-image { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; margin-right: 15px; border: 1px solid #f0f0f0; flex-shrink: 0; }
 
-.cart-item-info { /* Para nome e vendedor no carrinho */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-grow: 1; /* Ocupa espaço restante */
+.cart-item-info { /* Container para nome e vendedor no carrinho */
+    display: flex; flex-direction: column; justify-content: center; flex-grow: 1;
 }
 .cart-item-name { /* Nome do produto no carrinho */
-    font-weight: 600; /* Mais destaque */
-    color: #333; 
-    font-size: 1em;
-    margin: 0 0 3px 0;
+    font-weight: 600; color: #333; font-size: 1em; margin: 0 0 3px 0;
 }
-.cart-item-seller { /* Vendedor no carrinho (precisa adicionar ao contexto do item no carrinho na view) */
-    font-size: 0.8em;
-    color: #777;
+.cart-item-seller { /* Vendedor no carrinho */
+    font-size: 0.8em; color: #777;
 }
 
 .cart-item-quantity { width: 60px; padding: 8px; text-align: center; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
@@ -67,19 +59,23 @@
 /* O estilo do .cart-count no header é definido em tela_home_comprador.css */
 
 @media (max-width: 768px) {
-    /* html, body { overflow-y: auto; height: auto; } /* Já deve estar no tela_home_comprador.css via base */
-    .container-cadastro, .container-reset, .container-feedback, .cart-page-container .container-principal-home, .cart-page-container { flex-direction: column-reverse; height: auto; }
+    /* html, body { overflow-y: auto; height: auto; } /* Esta regra deve estar no CSS base (tela_home_comprador.css) */
+    .container-cadastro, .container-reset, .container-feedback, 
+    .cart-page-container .container-principal-home, /* Se a página do carrinho herdar .container-principal-home */
+    .cart-page-container /* Aplica diretamente ao container da página do carrinho */
+    { flex-direction: column-reverse; height: auto; }
+
     .left-side-cadastro, .right-side-cadastro, .left-side-reset, .right-side-reset, .left-side-feedback, .right-side-feedback { flex: none; width: 100%; min-height: 0; height: auto; }
+    
     .cart-header-row { display: none; }
-    .cart-item-row { flex-direction: column; align-items: stretch; text-align:left; padding: 15px; margin-bottom:15px; border: 1px solid #eee; border-radius: 8px;}
-    .cart-item { width: 100% !important; text-align: left !important; padding: 6px 0; }
-    .product-col { order: 1; margin-bottom: 10px; flex-direction: row; /* Imagem ao lado do nome em mobile */ }
-    .cart-item-image { margin-right: 10px; margin-bottom: 0; width: 60px; height: 60px;}
+    .cart-item-row { flex-direction: column; align-items: stretch; /* Mudado para stretch */ text-align:left; padding: 15px; margin-bottom:15px; border: 1px solid #eee; border-radius: 8px;}
+    .cart-item { width: 100% !important; text-align: left !important; padding: 8px 0; /* Aumentado padding vertical */ }
+    .product-col { order: 1; margin-bottom: 10px; flex-direction: row; }
+    .cart-item-image { margin-right: 10px; margin-bottom: 0; width: 70px; height: 70px;} /* Imagem menor em mobile */
     .cart-item-info { text-align: left; }
-    .price-col { order: 2; text-align: left !important; }
-    .quantity-col { order: 3; margin: 10px 0; text-align: left !important; }
-    .quantity-col form { text-align: left; }
-    .subtotal-col { order: 4; font-weight: bold; margin-bottom: 10px; text-align: left !important; }
-    .action-col { order: 5; text-align: right !important; } /* Botão remover à direita */
+    .price-col { order: 2; font-size: 0.9em; }
+    .quantity-col { order: 3; margin: 10px 0; }
+    .subtotal-col { order: 4; font-weight: bold; margin-bottom: 10px; font-size: 1em; }
+    .action-col { order: 5; text-align: right !important; padding-top: 10px; }
     .cart-summary { text-align: center; }
 }

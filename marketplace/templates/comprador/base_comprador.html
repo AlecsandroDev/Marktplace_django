@@ -11,7 +11,7 @@
 <body>
     <header class="topbar">
         <div class="logo-area">
-            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="logo-text"> </a>
+            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="logo-text"> </a> {# UniMarket - Nome do seu site aqui ou deixe vazio para só o logo CSS #}
         </div>
         <div class="search-area">
             <form method="GET" action="{% url 'marketplace:pagina_busca_produto' %}" class="search-form">
@@ -31,24 +31,27 @@
                class="header-action-btn cart-icon-link {% if request.resolver_match.url_name == 'ver_carrinho' %}active-icon{% endif %}" 
                title="Carrinho"> 
                 {% if request.session.num_itens_carrinho > 0 %}
-                    <img src="{% static 'accounts/image/cart_full.png' %}" alt="Carrinho com itens">
+                    <img src="{% static 'accounts/image/cart_full.png' %}" alt="Carrinho com itens" class="header-cart-icon">
                 {% else %}
-                    <img src="{% static 'accounts/image/cart.png' %}" alt="Carrinho vazio">
+                    <img src="{% static 'accounts/image/cart.png' %}" alt="Carrinho vazio" class="header-cart-icon">
                 {% endif %}
                 {% if request.session.num_itens_carrinho > 0 %}
                     <span class="cart-count">{{ request.session.num_itens_carrinho }}</span>
                 {% endif %}
             </a>
             <div class="profile-action">
-                 {# ÍCONE DE PERFIL AGORA LINKA PARA A PÁGINA DE PERFIL #}
                  <a href="{% url 'marketplace:perfil_comprador' %}" 
-                    class="header-action-btn profile-btn {% if request.resolver_match.url_name == 'perfil_comprador' or request.resolver_match.url_name == 'password_change' %}active-icon{% endif %}" 
-                    title="Minha Conta"> 
-                    <img src="{% static 'accounts/image/user.png' %}" alt="Perfil">
+                    class="header-action-btn profile-btn 
+                           {% if request.resolver_match.url_name == 'perfil_comprador' or request.resolver_match.url_name == 'editar_perfil' or request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' or request.resolver_match.url_name == 'encerrar_conta' %}active-icon{% endif %}" 
+                    title="Minha Conta">
+                    {# Tenta mostrar a foto do perfil do UserProfile (simulado), se não, usa o user.png padrão #}
+                    {% if user.is_authenticated and user.userprofile.foto.url %} {# Adapte para seu modelo UserProfile #}
+                        <img src="{{ user.userprofile.foto.url }}" alt="Perfil" class="header-profile-pic">
+                    {% else %}
+                        <img src="{% static 'accounts/image/user.png' %}" alt="Perfil" class="header-profile-icon">
+                    {% endif %}
                 </a>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'marketplace:comprador_logout' %}" class="logout-text-link">Sair</a>
-                {% endif %}
+                {# O Link de SAIR em texto foi REMOVIDO daqui, conforme solicitado #}
             </div>
         </div>
     </header>
@@ -56,8 +59,8 @@
     <nav class="main-navigation-tabs">
         <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="nav-tab {% block nav_inicio_active %}{% if request.resolver_match.url_name == 'pagina_inicial_comprador' and not request.GET.categoria and not request.GET.q_search %}active{% endif %}{% endblock %}">Início</a>
         <a href="#" class="nav-tab {% block nav_pedidos_active %}{% endblock %}">Pedidos</a> 
-        {# ABA PERFIL AGORA LINKA PARA A PÁGINA DE PERFIL #}
-        <a href="{% url 'marketplace:perfil_comprador' %}" class="nav-tab {% block nav_perfil_active %}{% if request.resolver_match.url_name == 'perfil_comprador' or request.resolver_match.url_name == 'lista_desejos' or request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' %}active{% endif %}{% endblock %}">Perfil</a>
+        <a href="{% url 'marketplace:perfil_comprador' %}" 
+           class="nav-tab {% block nav_perfil_active %}{% if request.resolver_match.url_name == 'perfil_comprador' or request.resolver_match.url_name == 'lista_desejos' or request.resolver_match.url_name == 'editar_perfil' or request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' or request.resolver_match.url_name == 'encerrar_conta' %}active{% endif %}{% endblock %}">Perfil</a>
     </nav>
 
     <main class="container-principal-home">

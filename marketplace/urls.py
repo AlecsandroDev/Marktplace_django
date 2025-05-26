@@ -1,6 +1,6 @@
 from django.urls import path, reverse_lazy
 from . import views
-from django.contrib.auth import views as auth_views # Para views de reset e mudança de senha
+from django.contrib.auth import views as auth_views
 
 app_name = 'marketplace'
 
@@ -29,17 +29,21 @@ urlpatterns = [
     path('comprador/logout/', views.comprador_logout, name='comprador_logout'),
     path('comprador/produto/<int:produto_id>/', views.detalhes_produto, name='detalhes_produto'),
     path('comprador/busca/', views.pagina_busca_produto, name='pagina_busca_produto'),
+    
     path('comprador/lista-desejos/', views.lista_desejos, name='lista_desejos'),
     path('comprador/desejos/adicionar/<int:produto_id>/', views.adicionar_aos_desejos, name='adicionar_aos_desejos'),
     path('comprador/desejos/remover/<int:produto_id>/', views.remover_dos_desejos, name='remover_dos_desejos'),
+
     path('comprador/carrinho/', views.ver_carrinho, name='ver_carrinho'),
     path('comprador/carrinho/adicionar/<int:produto_id>/', views.adicionar_ao_carrinho, name='adicionar_ao_carrinho'),
     path('comprador/carrinho/remover/<int:item_id>/', views.remover_do_carrinho, name='remover_do_carrinho'),
     
-    # URL PARA PERFIL DO COMPRADOR
+    # URLs de Perfil do Comprador
     path('comprador/perfil/', views.perfil_comprador, name='perfil_comprador'),
+    path('comprador/perfil/editar/', views.editar_perfil, name='editar_perfil'),
+    path('comprador/perfil/encerrar-conta/', views.encerrar_conta, name='encerrar_conta'),
 
-    # URLs PARA ALTERAÇÃO DE SENHA
+    # URLs para Alteração de Senha (dentro do perfil)
     path('comprador/perfil/alterar-senha/', 
          auth_views.PasswordChangeView.as_view(
              template_name='comprador/perfil_alterar_senha_form.html',

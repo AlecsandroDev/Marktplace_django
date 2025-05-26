@@ -1,0 +1,30 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Encerrar Conta - UniMarket{% endblock title %}
+
+{% block nav_perfil_active %}active{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/perfil_comprador.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="profile-page-container">
+    <h1 class="section-title" style="color: #d9534f;">Encerrar Conta</h1>
+
+    <div class="feedback-card" style="max-width: 600px; margin: 20px auto; text-align:left; border: 1px solid #d43f3a; background-color: #f2dede; padding: 20px; border-radius: 8px;">
+        <h3 style="color: #a94442; margin-top:0;">Tem certeza que deseja encerrar sua conta?</h3>
+        <p style="color: #a94442;">Esta ação é permanente e não pode ser desfeita. Todos os seus dados associados à sua conta (incluindo pedidos e lista de desejos) serão removidos ou anonimizados conforme nossas políticas.</p>
+        <p style="color: #a94442;">Seus pedidos em andamento podem ser afetados.</p>
+        <br>
+        <form method="POST" action="{% url 'marketplace:encerrar_conta' %}">
+            {% csrf_token %}
+            <div style="display: flex; justify-content: space-between; margin-top: 20px; flex-wrap:wrap; gap:10px;">
+                <a href="{% url 'marketplace:perfil_comprador' %}" class="btn-action-secondary" style="flex-grow:1;">Não, Voltar ao Perfil</a>
+                <button type="submit" class="btn-action-danger" style="flex-grow:1;">Sim, Encerrar Minha Conta</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
