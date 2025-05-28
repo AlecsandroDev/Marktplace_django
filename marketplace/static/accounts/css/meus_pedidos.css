@@ -11,19 +11,21 @@
 .orders-page-container .section-title {
     margin-top: 0;
     margin-bottom: 25px;
-    color: #3E6943;
+    color: #3E6943; 
     text-align: center;
+    font-size: 1.8em; /* Consistente com outros .section-title */
+    font-weight: 600;
 }
 
 .order-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 20px; 
 }
 
 .order-summary-card {
     border: 1px solid #e0e0e0;
-    border-left-width: 5px;
+    border-left-width: 5px; 
     border-radius: 8px;
     background-color: #fdfdfd;
     transition: box-shadow 0.3s ease, transform 0.2s ease;
@@ -85,18 +87,18 @@
     font-style: italic;
     color: #777;
     font-size: 0.9em;
-    display: flex; /* Para alinhar imagem e texto */
+    display: flex; 
     align-items: center;
 }
-.order-summary-item-image { /* Imagem do primeiro item na lista de pedidos */
-    width: 30px; /* Tamanho pequeno */
+.order-summary-item-image {
+    width: 30px;
     height: 30px;
     object-fit: cover;
     border-radius: 4px;
     margin-right: 8px;
     border: 1px solid #eee;
+    vertical-align: middle; /* Alinha melhor com o texto */
 }
-
 
 .order-card-footer {
     text-align: right;

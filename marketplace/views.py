@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.http import Http404
 import copy
+import random # Para gerar o número de pedido simulado
 
 # --- Dados de Placeholder (nível do módulo para reuso) ---
 _placeholder_all_products = [
@@ -62,27 +63,19 @@ _simulacao_meus_pedidos = [
         'itens': [
             {'produto_id': 1, 'nome': 'Bolo de Cenoura Delicioso', 'quantidade': 1, 'preco_unitario': 22.50, 'subtotal': 22.50},
             {'produto_id': 2, 'nome': 'Coxinha Crocante (Unidade)', 'quantidade': 4, 'preco_unitario': 7.00, 'subtotal': 28.00}
-        ],
-        'endereco_entrega': 'Rua da Universidade, 123, Bloco A, Apto 101, Cidade Universitária',
-        'metodo_pagamento': 'Cartão de Crédito final **** 1234'
+        ], 'endereco_entrega': 'Rua da Universidade, 123...', 'metodo_pagamento': 'Cartão de Crédito final **** 1234'
     },
     {
         'id': 2025002, 'data_pedido': '23 de Maio, 2025', 'total': 16.00, 'status': 'Pendente',
         'resumo_itens': 'Mini Pizza Calabresa (2)',
-        'itens': [
-            {'produto_id': 6, 'nome': 'Mini Pizza Calabresa', 'quantidade': 2, 'preco_unitario': 8.00, 'subtotal': 16.00}
-        ],
-        'endereco_entrega': 'Av. dos Estudantes, 789, Cantina Central, Cidade Universitária',
-        'metodo_pagamento': 'PIX'
+        'itens': [ {'produto_id': 6, 'nome': 'Mini Pizza Calabresa', 'quantidade': 2, 'preco_unitario': 8.00, 'subtotal': 16.00} ],
+        'endereco_entrega': 'Av. dos Estudantes, 789...', 'metodo_pagamento': 'PIX'
     },
     {
         'id': 2025003, 'data_pedido': '15 de Maio, 2025', 'total': 6.50, 'status': 'Cancelado',
         'resumo_itens': 'Empada de Palmito (1)',
-        'itens': [
-            {'produto_id': 7, 'nome': 'Empada de Palmito', 'quantidade': 1, 'preco_unitario': 6.50, 'subtotal': 6.50}
-        ],
-        'endereco_entrega': 'Rua da Biblioteca, S/N, Fundos, Cidade Universitária',
-        'metodo_pagamento': 'Dinheiro'
+        'itens': [ {'produto_id': 7, 'nome': 'Empada de Palmito', 'quantidade': 1, 'preco_unitario': 6.50, 'subtotal': 6.50} ],
+        'endereco_entrega': 'Rua da Biblioteca, S/N...', 'metodo_pagamento': 'Dinheiro'
     },
 ]
 
@@ -110,78 +103,60 @@ def admin_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-        if user is not None and user.is_staff: 
-            login(request, user)
-            return redirect('marketplace:dashboard')
-        else: 
-            messages.error(request, 'Credenciais inválidas ou você não tem permissão para acessar o admin.')
-            return redirect('marketplace:login')
+        if user is not None and user.is_staff: login(request, user); return redirect('marketplace:dashboard')
+        else: messages.error(request, 'Credenciais inválidas ou você não tem permissão para acessar o admin.'); return redirect('marketplace:login')
     return render(request, "admin/login.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_dashboard(request): 
-    return render(request, "admin/dashboard.html")
+def admin_dashboard(request): return render(request, "admin/dashboard.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_anuncios(request): 
-    return render(request, "admin/anuncios.html")
+def admin_anuncios(request): return render(request, "admin/anuncios.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_usuarios(request): 
-    return render(request, "admin/usuarios.html")
+def admin_usuarios(request): return render(request, "admin/usuarios.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_usuario(request): 
-    return render(request, "admin/gerenciar_usuario.html")
+def admin_gerenciar_usuario(request): return render(request, "admin/gerenciar_usuario.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_reportes(request): 
-    return render(request, "admin/reportes.html")
+def admin_reportes(request): return render(request, "admin/reportes.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_reporte(request): 
-    return render(request, "admin/gerenciar_reporte.html")
+def admin_gerenciar_reporte(request): return render(request, "admin/gerenciar_reporte.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_reportes_arquivados(request): 
-    return render(request, "admin/reportes_arquivados.html")
+def admin_reportes_arquivados(request): return render(request, "admin/reportes_arquivados.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_reporte_arquivado(request): 
-    return render(request, "admin/gerenciar_reporte_arquivado.html")
+def admin_gerenciar_reporte_arquivado(request): return render(request, "admin/gerenciar_reporte_arquivado.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_pedidos(request): 
-    return render(request, "admin/pedidos.html")
+def admin_pedidos(request): return render(request, "admin/pedidos.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_pedido(request): 
-    return render(request, "admin/gerenciar_pedido.html")
+def admin_gerenciar_pedido(request): return render(request, "admin/gerenciar_pedido.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_pedidos_finalizados(request): 
-    return render(request, "admin/pedidos_finalizados.html")
+def admin_pedidos_finalizados(request): return render(request, "admin/pedidos_finalizados.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_pedido_finalizado(request): 
-    return render(request, "admin/gerenciar_pedido_finalizado.html")
+def admin_gerenciar_pedido_finalizado(request): return render(request, "admin/gerenciar_pedido_finalizado.html")
 
 @login_required
-def admin_logout(request): 
-    logout(request)
-    return redirect('marketplace:login')
+def admin_logout(request): logout(request); return redirect('marketplace:login')
 
 
 # ========================
@@ -271,7 +246,6 @@ def detalhes_produto(request, produto_id):
     produto_encontrado_list = _enrich_product_data([produto_encontrado_original], request.session, _simulacao_ids_favoritados)
     produto_encontrado = produto_encontrado_list[0] if produto_encontrado_list else None
     if not produto_encontrado: raise Http404("Erro ao processar dados do produto.")
-    # Adiciona avaliações simuladas ao contexto do produto para a página de detalhes do produto
     produto_encontrado['reviews'] = _simulacao_avaliacoes_produtos.get(produto_id, [])
     produto_encontrado['user_ja_avaliou'] = any(r['autor_username'] == request.user.username for r in produto_encontrado['reviews']) if request.user.is_authenticated else False
     context = {'produto': produto_encontrado, 'nome_usuario': request.user.first_name or request.user.username}
@@ -350,15 +324,13 @@ def ver_carrinho(request):
             messages.error(request, f"Item inválido no carrinho: ID {item_id_str}")
             if item_id_str in request.session.get('carrinho', {}): del request.session['carrinho'][item_id_str]; request.session.modified = True
             continue
-    context = {'itens_carrinho': itens_carrinho, 'total_carrinho': total_carrinho, 'nome_usuario': request.user.first_name or request.user.username}
+    context = {'itens_carrinho': itens_carrinho, 'total_carrinho': total_carrinho, 'user_obj': request.user }
     return render(request, 'comprador/carrinho.html', context)
 
 @login_required
 def perfil_comprador(request):
     user = request.user
     perfil_extra_data = copy.deepcopy(_simulacao_perfil_extra_usuario_atual) 
-    # if hasattr(user, 'userprofile') and user.userprofile.foto:
-    #     perfil_extra_data['foto_url'] = user.userprofile.foto.url
     context = { 'user_obj': user, 'perfil_extra': perfil_extra_data, }
     return render(request, 'comprador/perfil.html', context)
 
@@ -402,10 +374,12 @@ def meus_pedidos(request):
         logout(request); messages.error(request, "Página não disponível."); return redirect('marketplace:landing_page')
     pedidos_do_usuario = copy.deepcopy(_simulacao_meus_pedidos)
     for pedido in pedidos_do_usuario:
-        for item_pedido in pedido.get('itens', []):
-            produto_detalhe_original = next((p for p in _placeholder_all_products if p.get('id') == item_pedido.get('produto_id')), None)
-            if produto_detalhe_original:
-                item_pedido['imagem_arquivo_local'] = produto_detalhe_original.get('imagem_arquivo_local') # Adiciona para o resumo
+        if pedido.get('itens'):
+            for item_pedido in pedido.get('itens'): 
+                produto_detalhe_original = next((p for p in _placeholder_all_products if p.get('id') == item_pedido.get('produto_id')), None)
+                if produto_detalhe_original:
+                    item_pedido['imagem_arquivo_local'] = produto_detalhe_original.get('imagem_arquivo_local')
+                    item_pedido['imagem_url'] = produto_detalhe_original.get('imagem_url')
     context = { 'pedidos': pedidos_do_usuario }
     return render(request, 'comprador/meus_pedidos.html', context)
 
@@ -418,21 +392,33 @@ def detalhe_pedido(request, pedido_id):
         if pedido_simulado.get('id') == pedido_id:
             pedido_encontrado = copy.deepcopy(pedido_simulado)
             for item_pedido in pedido_encontrado.get('itens', []):
-                produto_detalhe = next((p for p in _placeholder_all_products if p.get('id') == item_pedido.get('produto_id')), None)
-                if produto_detalhe:
-                    item_pedido['imagem_arquivo_local'] = produto_detalhe.get('imagem_arquivo_local')
-                    item_pedido['imagem_url'] = produto_detalhe.get('imagem_url')
-                    item_pedido['descricao_longa_produto'] = produto_detalhe.get('descricao_longa', 'Descrição não disponível.')
-                item_status = _enrich_product_data([{'id': item_pedido.get('produto_id')}], request.session, _simulacao_ids_favoritados)
-                if item_status and len(item_status) > 0:
-                    item_pedido['is_favorited'] = item_status[0].get('is_favorited', False)
-                    item_pedido['is_in_cart'] = item_status[0].get('is_in_cart', False)
-                item_pedido['avaliacoes_do_produto'] = _simulacao_avaliacoes_produtos.get(item_pedido.get('produto_id'), [])
-                item_pedido['ja_avaliado_pelo_usuario_atual'] = any(
-                    avaliacao.get('autor_username') == request.user.username 
-                    for avaliacao in item_pedido['avaliacoes_do_produto']
-                ) if request.user.is_authenticated else False
-            break
+                # Garante que temos 'produto_id' para os links no template
+                if 'produto_id' not in item_pedido and 'id' in item_pedido: # Fallback
+                    item_pedido['produto_id'] = item_pedido['id']
+                
+                produto_id_do_item = item_pedido.get('produto_id')
+
+                if produto_id_do_item is not None:
+                    produto_detalhe = next((p for p in _placeholder_all_products if p.get('id') == produto_id_do_item), None)
+                    if produto_detalhe:
+                        item_pedido['imagem_arquivo_local'] = produto_detalhe.get('imagem_arquivo_local')
+                        item_pedido['imagem_url'] = produto_detalhe.get('imagem_url')
+                        item_pedido['descricao_longa_produto'] = produto_detalhe.get('descricao_longa', 'Descrição não disponível.')
+                    
+                    item_status = _enrich_product_data([{'id': produto_id_do_item}], request.session, _simulacao_ids_favoritados)
+                    if item_status and len(item_status) > 0:
+                        item_pedido['is_favorited'] = item_status[0].get('is_favorited', False)
+                        item_pedido['is_in_cart'] = item_status[0].get('is_in_cart', False)
+                    
+                    item_pedido['avaliacoes_do_produto'] = _simulacao_avaliacoes_produtos.get(produto_id_do_item, [])
+                    item_pedido['ja_avaliado_pelo_usuario_atual'] = any(
+                        avaliacao.get('autor_username') == request.user.username 
+                        for avaliacao in item_pedido['avaliacoes_do_produto']
+                    ) if request.user.is_authenticated else False
+                else:
+                    item_pedido['link_para_detalhes_produto_quebrado'] = True 
+            break 
+            
     if not pedido_encontrado: raise Http404("Pedido não encontrado.")
     context = { 'pedido': pedido_encontrado }
     return render(request, 'comprador/detalhe_pedido.html', context)
@@ -464,12 +450,54 @@ def submeter_avaliacao_pedido(request, pedido_id, produto_id):
         nota = request.POST.get('rating')
         comentario = request.POST.get('comment')
         print(f"Avaliação SIMULADA para Pedido ID {pedido_id}, Produto ID {produto_id}: Nota={nota}, Comentário='{comentario}'")
-        # Aqui você adicionaria à lista _simulacao_avaliacoes_produtos e talvez marcaria o item como avaliado
-        # para este pedido específico (exigiria mais lógica na simulação).
         messages.success(request, "Sua avaliação foi enviada com sucesso! (Simulação)")
         return redirect('marketplace:detalhe_pedido', pedido_id=pedido_id)
     messages.error(request, "Não foi possível submeter a avaliação.")
     return redirect('marketplace:detalhe_pedido', pedido_id=pedido_id)
+
+@login_required
+def checkout_pagina(request):
+    carrinho_session = request.session.get('carrinho', {})
+    if not carrinho_session:
+        messages.info(request, "Seu carrinho está vazio."); return redirect('marketplace:ver_carrinho')
+    itens_carrinho_para_pedido = []; total_carrinho = 0
+    for item_id_str, item_data in carrinho_session.items():
+        try:
+            preco = float(item_data.get('preco', 0)); quantidade = int(item_data.get('quantidade', 0))
+            if quantidade <= 0: continue
+            subtotal = preco * quantidade
+            itens_carrinho_para_pedido.append({
+                'produto_id': item_data.get('id'), 
+                'id': item_data.get('id'), 
+                'nome': item_data.get('nome'), 'preco_unitario': preco, 
+                'quantidade': quantidade, 'subtotal': subtotal, 
+                'imagem': item_data.get('imagem'), 'tipo_imagem': item_data.get('tipo_imagem')
+            })
+            total_carrinho += subtotal
+        except (ValueError, TypeError): continue
+    if request.method == 'POST':
+        pedido_id_simulado = random.randint(10000, 99999) 
+        global _simulacao_meus_pedidos
+        novo_pedido_simulado = {
+            'id': pedido_id_simulado, 'data_pedido': 'Hoje', 'total': total_carrinho, 'status': 'Pendente',
+            'resumo_itens': ', '.join([f"{item['nome']} ({item['quantidade']})" for item in itens_carrinho_para_pedido]),
+            'itens': copy.deepcopy(itens_carrinho_para_pedido), 
+            'endereco_entrega': f"{request.POST.get('rua', '(Rua não informada)')}, {request.POST.get('numero', '(S/N)')} - {request.POST.get('bairro', '(Bairro não informado)')}, {request.POST.get('cidade', '(Cidade não informada)')} - {request.POST.get('cep', '(CEP não informado)')}",
+            'metodo_pagamento': request.POST.get('metodo_pagamento', 'Não especificado')
+        }
+        _simulacao_meus_pedidos.insert(0, novo_pedido_simulado)
+        if 'carrinho' in request.session: del request.session['carrinho']
+        _update_cart_item_count(request); request.session.modified = True
+        messages.success(request, "Seu pedido foi realizado com sucesso! (Simulação)")
+        return redirect('marketplace:pedido_confirmado', pedido_id_simulado=pedido_id_simulado)
+    
+    context = {'itens_carrinho': itens_carrinho_para_pedido, 'total_carrinho': total_carrinho, 'user_obj': request.user }
+    return render(request, 'comprador/checkout.html', context)
+
+@login_required
+def pedido_confirmado(request, pedido_id_simulado):
+    context = {'pedido_id_simulado': pedido_id_simulado, 'nome_usuario': request.user.first_name or request.user.username }
+    return render(request, 'comprador/pedido_confirmado.html', context)
 
 @login_required
 def comprador_logout(request):

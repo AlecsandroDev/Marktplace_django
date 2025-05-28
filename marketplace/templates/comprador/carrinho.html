@@ -8,11 +8,19 @@
 {% endblock extra_css %}
 
 {% block nav_perfil_active %}{% endblock %} 
-{# Ícone do carrinho no header já tem a classe 'active-icon' via base_comprador.html #}
+{# Nenhuma aba principal ativa, mas o ícone do carrinho no header usa 'active-icon' via base_comprador.html #}
 
 {% block content %}
 <div class="cart-page-container">
     <h1 class="section-title">Meu Carrinho de Compras</h1>
+
+    {% if messages %} {# Adicionado para exibir mensagens aqui também #}
+        <ul class="messages-global" style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <li class="message-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     {% if itens_carrinho %}
         <div class="cart-items-table">
@@ -37,7 +45,7 @@
                         {% endif %}
                         <div class="cart-item-info">
                             <h3 class="cart-item-name">{{ item.nome }}</h3>
-                               <p class="cart-item-seller">Por: {{ item.vendedor_nome }}</p>
+                            {# <p class="cart-item-seller">Vendido por: {{ item.vendedor_nome }}</p> #}
                         </div>
                     </a>
                 </div>
@@ -58,7 +66,8 @@
 
         <div class="cart-summary">
             <h3 class="cart-total">Total do Carrinho: <strong>R$ {{ total_carrinho|floatformat:2 }}</strong></h3>
-            <a href="#" class="btn-checkout">Continuar para Finalizar Compra</a>
+            {# LINK CORRIGIDO ABAIXO #}
+            <a href="{% url 'marketplace:checkout' %}" class="btn-checkout">Continuar para Finalizar Compra</a>
         </div>
 
     {% else %}

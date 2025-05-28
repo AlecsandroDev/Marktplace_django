@@ -1,0 +1,125 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Finalizar Compra - UniMarket{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/checkout.css' %}">
+{% endblock extra_css %}
+
+{% block nav_inicio_active %}{% endblock %}
+{% block nav_pedidos_active %}{% endblock %}
+{% block nav_perfil_active %}{% endblock %}
+
+{% block content %}
+<div class="checkout-page-container">
+    <h1 class="section-title">Finalizar Compra</h1>
+
+    {% if messages %}
+        <ul class="messages-global" style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <li class="message-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if not itens_carrinho %}
+        <div class="empty-message" style="padding: 20px; text-align:center; background-color:#fff; border-radius:8px;">
+            <p>Seu carrinho está vazio. Não é possível finalizar a compra.</p>
+            <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-primary-action">Voltar para Início</a>
+        </div>
+    {% else %}
+        <form method="POST" action="{% url 'marketplace:checkout' %}" class="checkout-form">
+            {% csrf_token %}
+            <div class="checkout-layout">
+                <section class="checkout-section delivery-info">
+                    <h2>1. Endereço de Entrega</h2>
+                    <p class="form-instructions"><small>Os campos abaixo são para simulação.</small></p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nome_completo">Nome Completo*</label>
+                            <input type="text" id="nome_completo" name="nome_completo" value="{{ user_obj.first_name|default:'' }} {{ user_obj.last_name|default:'' }}" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label for="cep">CEP*</label>
+                            <input type="text" id="cep" name="cep" placeholder="00000-000" class="form-control" required>
+                        </div>
+                        <div class="form-group half-width">
+                            <label for="rua">Rua / Avenida*</label>
+                            <input type="text" id="rua" name="rua" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group third-width">
+                            <label for="numero">Número*</label>
+                            <input type="text" id="numero" name="numero" class="form-control" required>
+                        </div>
+                        <div class="form-group third-width">
+                            <label for="complemento">Complemento</label>
+                            <input type="text" id="complemento" name="complemento" placeholder="Apto, Bloco" class="form-control">
+                        </div>
+                        <div class="form-group third-width">
+                            <label for="bairro">Bairro*</label>
+                            <input type="text" id="bairro" name="bairro" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label for="cidade">Cidade*</label>
+                            <input type="text" id="cidade" name="cidade" class="form-control" required>
+                        </div>
+                        <div class="form-group half-width">
+                            <label for="estado">Estado* (Sigla)</label>
+                            <input type="text" id="estado" name="estado" placeholder="Ex: SP" maxlength="2" class="form-control" required>
+                        </div>
+                    </div>
+                     <div class="form-row">
+                        <div class="form-group">
+                            <label for="telefone">Telefone (Opcional)</label>
+                            <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" class="form-control">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="checkout-section payment-info">
+                    <h2>2. Método de Pagamento</h2>
+                    <div class="payment-options">
+                        <div class="payment-option">
+                            <input type="radio" id="payment_card" name="metodo_pagamento" value="CartaoCredito" checked required>
+                            <label for="payment_card">Cartão de Crédito (Simulação)</label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="payment_pix" name="metodo_pagamento" value="PIX" required>
+                            <label for="payment_pix">PIX (Simulação)</label>
+                        </div>
+                        <div class="payment-option">
+                            <input type="radio" id="payment_boleto" name="metodo_pagamento" value="Boleto" required>
+                            <label for="payment_boleto">Boleto (Simulação)</label>
+                        </div>
+                    </div>
+                    <p class="form-instructions" style="font-size:0.9em; color:#777; margin-top:15px;">Nota: A integração com pagamento real não está implementada. Esta é apenas uma simulação.</p>
+                </section>
+
+                <aside class="checkout-summary-aside">
+                    <h2>Resumo do Pedido</h2>
+                    <div class="order-summary-items">
+                        {% for item in itens_carrinho %}
+                        <div class="summary-item">
+                            <span class="summary-item-name">{{ item.nome }} ({{ item.quantidade }}x)</span>
+                            <span class="summary-item-price">R$ {{ item.subtotal|floatformat:2 }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="summary-total">
+                        <strong>Total:</strong>
+                        <strong>R$ {{ total_carrinho|floatformat:2 }}</strong>
+                    </div>
+                    <button type="submit" class="btn-finalizar-compra">Finalizar Pedido e Pagar</button>
+                </aside>
+            </div>
+        </form>
+    {% endif %}
+</div>
+{% endblock content %}

@@ -1,0 +1,41 @@
+{% extends 'comprador/base_comprador.html' %}
+{% load static %}
+
+{% block title %}Pedido Confirmado - UniMarket{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/checkout.css' %}"> {# Pode reutilizar o CSS do checkout #}
+{% endblock extra_css %}
+
+{% block nav_inicio_active %}{% endblock %} 
+{% block nav_pedidos_active %}{% endblock %}
+{% block nav_perfil_active %}{% endblock %}
+
+{% block content %}
+<div class="checkout-page-container confirmation-page" style="text-align: center;">
+    
+    {% if messages %}
+        <ul class="messages-global" style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <li class="message-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="confirmation-icon" style="font-size: 4.5em; color: #28a745; margin-bottom: 15px;">
+        ✓
+    </div>
+    <h1 class="section-title" style="color: #28a745; margin-bottom: 20px;">Pedido Realizado com Sucesso!</h1>
+    
+    <div class="confirmation-message">
+        <p>Obrigado por comprar no UniMarket{% if nome_usuario and nome_usuario != "Convidado" %}, {{ nome_usuario }}{% endif %}!</p>
+        <p>Seu pedido número <strong>#{{ pedido_id_simulado }}</strong> foi recebido e está sendo processado (esta é uma simulação).</p>
+        <p>Em breve você receberá um email com mais detalhes (simulação).</p>
+    </div>
+
+    <div class="confirmation-actions">
+        <a href="{% url 'marketplace:pagina_inicial_comprador' %}" class="btn-primary-action">Continuar Comprando</a>
+        <a href="{% url 'marketplace:meus_pedidos' %}" class="btn-secondary-action">Ver Meus Pedidos</a>
+    </div>
+</div>
+{% endblock content %}

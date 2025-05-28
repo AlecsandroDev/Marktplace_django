@@ -68,20 +68,31 @@
 .order-item-name a:hover { color: #4E7A53; text-decoration: underline; }
 .order-item-info p { margin: 3px 0; font-size: 0.9em; color: #555; }
 
+/* Seção de Avaliação por Item */
 .item-evaluation-section {
-    margin-top: 10px; padding-top: 10px;
-    border-top: 1px dashed #ebebeb; width: 100%; font-size: 0.9em;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #e0e0e0;
+    width: 100%;
+    font-size: 0.9em;
 }
-.item-evaluation-section h4 { font-size: 1em; color: #444; margin: 0 0 10px 0; }
+.item-evaluation-section h4 {
+    font-size: 1.1em;
+    color: #444;
+    margin: 0 0 12px 0;
+}
 .evaluation-done-message small { color: #777; font-style: italic; }
 .item-feedback-link a { color: #007bff; text-decoration: none; font-weight: 500; }
 .item-feedback-link a:hover { text-decoration: underline; }
 
 .item-review-form {
-    background-color: #fdfdfd; padding: 15px;
-    border-radius: 6px; margin-top: 10px;
+    background-color: #fdfdfd;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #efefef;
+    margin-top: 10px;
 }
-.rating-stars-form { margin-bottom: 10px; }
+.rating-stars-form { margin-bottom: 10px; display: flex; align-items: center; }
 .rating-stars-form > span { margin-right: 8px; font-weight: 500; font-size: 0.9em; }
 .star-input { display: inline-block; direction: rtl; }
 .star-input input[type="radio"] { display: none; }
@@ -99,6 +110,7 @@
 .btn-submit-item-review {
     padding: 8px 15px; font-size: 0.9em; border-radius: 5px; border: none;
     cursor: pointer; background-color: #5cb85c; color: white; font-weight: 500;
+    margin-top: 5px;
 }
 .btn-submit-item-review:hover { background-color: #4cae4c; }
 
@@ -110,6 +122,8 @@
 .review-rating { color: #FFD700; margin-left: 5px; font-size: 1em; }
 .review-text-summary { font-style: italic; }
 .review-date-summary { font-size: 0.8em; color: #888; }
+.no-reviews-yet small { color: #888; font-style: italic; }
+
 
 .order-item-subtotal { font-size: 1em; font-weight: 500; color: #333; text-align: right; min-width: 80px; padding-top: 5px; }
 .order-summary-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 0.95em; }
@@ -124,7 +138,7 @@
 }
 .btn-pedir-novamente:hover { background-color: #507a48; }
 .empty-message { text-align: center; padding: 30px; }
-.btn-primary-action { } /* Já definido em meus_pedidos.css ou tela_home_comprador.css */
+.btn-primary-action { /* Já definido em meus_pedidos.css ou tela_home_comprador.css */ }
 
 @media (max-width: 600px) {
     .order-detail-header h1 { font-size: 1.6em; }

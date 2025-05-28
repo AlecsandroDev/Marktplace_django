@@ -3,7 +3,7 @@
 
 {% block title %}Meus Pedidos - UniMarket{% endblock title %}
 
-{% block nav_pedidos_active %}active{% endblock %} {# Ativa a aba "Pedidos" no menu principal #}
+{% block nav_pedidos_active %}active{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'accounts/css/meus_pedidos.css' %}">
@@ -17,7 +17,6 @@
         <div class="order-list">
             {% for pedido in pedidos %}
             <div class="order-summary-card status-{{ pedido.status|slugify }}">
-                {# LINK ATUALIZADO para a página de detalhe do pedido #}
                 <a href="{% url 'marketplace:detalhe_pedido' pedido_id=pedido.id %}" class="order-card-link">
                     <div class="order-card-header">
                         <h3 class="order-id">Pedido #{{ pedido.id }}</h3>
@@ -28,11 +27,12 @@
                         <p class="order-total"><strong>Total:</strong> R$ {{ pedido.total|floatformat:2 }}</p>
                         <p class="order-items-summary">
                             <strong>Itens:</strong> 
-                            {# Mostra a imagem do primeiro item do pedido, se houver e tiver imagem_arquivo_local #}
                             {% if pedido.itens.0.imagem_arquivo_local %}
                                 <img src="{% static 'accounts/image/'|add:pedido.itens.0.imagem_arquivo_local %}" alt="{{ pedido.itens.0.nome }}" class="order-summary-item-image">
-                            {% elif pedido.itens.0.imagem_url %} {# Fallback para imagem_url se existir no primeiro item #}
+                            {% elif pedido.itens.0.imagem_url %}
                                 <img src="{{ pedido.itens.0.imagem_url }}" alt="{{ pedido.itens.0.nome }}" class="order-summary-item-image">
+                            {% else %}
+                                {# Placeholder se o primeiro item não tiver imagem definida na simulação #}
                             {% endif %}
                             {{ pedido.resumo_itens|truncatewords:10 }}
                         </p>

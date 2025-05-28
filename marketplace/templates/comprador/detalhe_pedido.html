@@ -3,7 +3,7 @@
 
 {% block title %}Pedido #{{ pedido.id }} - UniMarket{% endblock title %}
 
-{% block nav_pedidos_active %}active{% endblock %} {# Mantém a aba "Pedidos" ativa #}
+{% block nav_pedidos_active %}active{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'accounts/css/detalhe_pedido.css' %}">
@@ -33,7 +33,8 @@
                 <div class="order-item-card">
                     <div class="order-item-main-info">
                         <div class="order-item-image-container">
-                            <a href="{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}" class="order-item-image-link">
+                            {# LINK CORRIGIDO: usa item.produto_id (ou item.id se for o fallback) #}
+                            <a href="{% if not item.link_para_detalhes_produto_quebrado %}{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}{% else %}#{% endif %}" class="order-item-image-link">
                                 {% if item.imagem_arquivo_local %}
                                     <img src="{% static 'accounts/image/'|add:item.imagem_arquivo_local %}" alt="{{ item.nome }}" class="order-item-image">
                                 {% elif item.imagem_url %}
@@ -44,7 +45,8 @@
                             </a>
                         </div>
                         <div class="order-item-info">
-                            <h4 class="order-item-name"><a href="{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}">{{ item.nome }}</a></h4>
+                             {# LINK CORRIGIDO: usa item.produto_id #}
+                            <h4 class="order-item-name"><a href="{% if not item.link_para_detalhes_produto_quebrado %}{% url 'marketplace:detalhes_produto' produto_id=item.produto_id %}{% else %}#{% endif %}">{{ item.nome }}</a></h4>
                             <p>Quantidade: {{ item.quantidade }}</p>
                             <p>Preço Unitário: R$ {{ item.preco_unitario|floatformat:2 }}</p>
                         </div>
@@ -59,6 +61,7 @@
                         {% if item.ja_avaliado_pelo_usuario_atual %}
                             <p class="evaluation-done-message"><small>Você já avaliou este produto (simulação).</small></p>
                         {% else %}
+                            {# LINK CORRIGIDO: usa item.produto_id #}
                             <form method="POST" action="{% url 'marketplace:submeter_avaliacao_pedido' pedido_id=pedido.id produto_id=item.produto_id %}" class="item-review-form">
                                 {% csrf_token %}
                                 <div class="rating-stars-form">
@@ -95,9 +98,11 @@
                                     </div>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            <p class="no-reviews-yet"><small>Nenhuma avaliação ainda para este produto.</small></p>
                         {% endif %}
                     </div>
-                    {% endif %} {# Fim do if pedido.status == 'Concluído' #}
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>

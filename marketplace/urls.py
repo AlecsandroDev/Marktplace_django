@@ -5,8 +5,8 @@ from django.contrib.auth import views as auth_views
 app_name = 'marketplace'
 
 urlpatterns = [
+    # ... (todas as suas URLs existentes: landing_page, admin, comprador_login, etc.) ...
     path('', views.landing_page, name='landing_page'),
-    # Admin URLs
     path('admin/', views.admin_login, name='login'),
     path('admin/dashboard/', views.admin_dashboard, name='dashboard'),
     path('admin/anuncios/', views.admin_anuncios, name='anuncios'),
@@ -22,7 +22,6 @@ urlpatterns = [
     path('admin/gerenciar_pedido_finalizado/', views.admin_gerenciar_pedido_finalizado, name='gerenciar_pedido_finalizado'),
     path('admin/logout/', views.admin_logout, name='admin_logout'),
 
-    # Comprador URLs
     path('comprador/login/', views.comprador_login, name='comprador_login'),
     path('comprador/cadastro/', views.comprador_cadastro, name='comprador_cadastro'),
     path('comprador/home/', views.home_comprador, name='pagina_inicial_comprador'),
@@ -80,10 +79,11 @@ urlpatterns = [
          ),
          name='password_reset_complete'),
 
-    # URLs PARA PEDIDOS DO COMPRADOR
     path('comprador/meus-pedidos/', views.meus_pedidos, name='meus_pedidos'),
     path('comprador/meus-pedidos/<int:pedido_id>/', views.detalhe_pedido, name='detalhe_pedido'),
     path('comprador/pedir-novamente/<int:pedido_id>/', views.pedir_novamente, name='pedir_novamente'),
-    # NOVA URL PARA SUBMETER AVALIAÇÃO DE UM ITEM DE PEDIDO
     path('comprador/pedido/<int:pedido_id>/avaliar-item/<int:produto_id>/', views.submeter_avaliacao_pedido, name='submeter_avaliacao_pedido'),
+
+    path('comprador/checkout/', views.checkout_pagina, name='checkout'),
+    path('comprador/pedido-confirmado/<int:pedido_id_simulado>/', views.pedido_confirmado, name='pedido_confirmado'),
 ]
