@@ -5,9 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Usuários Admin</title>
-  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/css/gerenciar_usuario.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/gerenciar_usuario.css' %}">
 </head>
 
 <body>
@@ -37,7 +37,7 @@
 
       <div class="buttons">
         <input type="submit" value="Atualizar">
-        <a href="{% url 'usuarios' %}">Voltar</a>
+        <a href="{% url 'marketplace:admin_usuarios' %}">Voltar</a>
       </div>
     </form>
   </div>

@@ -5,9 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Pedidos - Finalizados</title>
-  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/css/reportes.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/reportes.css' %}">
 </head>
 
 <body>
@@ -44,7 +44,7 @@
     </table>
   </div>
   <div class="bottom-links">
-    <a href="{% url 'pedidos' %}">Voltar</a>
+    <a href="{% url 'marketplace:admin_pedidos' %}">Voltar</a>
   </div>
 </body>
 

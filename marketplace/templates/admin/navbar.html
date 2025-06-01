@@ -1,12 +1,12 @@
 <header class="navbar">
   <nav>
     <ul>
-      <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>
-      <li><a href="{% url 'usuarios' %}">USUÁRIOS</a></li>
-      <li><a href="{% url 'anuncios' %}">ANÚNCIOS</a></li>
-      <li><a href="{% url 'reportes' %}">REPORTES</a></li>
-      <li><a href="{% url 'pedidos' %}">PEDIDOS</a></li>
-      <li class="logout"><a href="{% url 'logout' %}">LOGOUT</a></li>
+      <li><a href="{% url 'marketplace:admin_dashboard' %}">DASHBOARD</a></li>
+      <li><a href="{% url 'marketplace:admin_usuarios' %}">USUÁRIOS</a></li>
+      <li><a href="{% url 'marketplace:admin_anuncios' %}">ANÚNCIOS</a></li>
+      <li><a href="{% url 'marketplace:admin_reportes' %}">REPORTES</a></li>
+      <li><a href="{% url 'marketplace:admin_pedidos' %}">PEDIDOS</a></li>
+      <li class="logout"><a href="{% url 'marketplace:admin_logout' %}">LOGOUT</a></li>
     </ul>
   </nav>
 </header>

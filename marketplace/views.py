@@ -42,59 +42,101 @@ _simulacao_ids_favoritados = [1, 4] # Ex: Produto 1 (Bolo) e 4 (PF) estão favor
 def landing_page(request):
     return render(request, 'comprador/inicial.html')
 
-# ========= VIEWS DO ADMIN ==========
-# (COLE AQUI TODAS AS SUAS FUNÇÕES DE VIEW DE ADMIN COMPLETAS: admin_login, admin_dashboard, etc.)
-def admin_login(request): # Exemplo
+# ========= VIEWS DO ADMIN ==========   
+def admin_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        
         user = authenticate(request, username=username, password=password)
-        if user is not None and user.is_staff:
+        if user is not None and user.is_staff: # Verifica se é staff
             login(request, user)
-            return redirect('marketplace:dashboard')
+            return redirect('marketplace:admin_dashboard') # CORRETO: Redireciona após login
         else:
             messages.error(request, 'Credenciais inválidas ou você não tem permissão para acessar o admin.')
-            return redirect('marketplace:login')
+            return redirect('marketplace:admin_login') # CORRETO: Redireciona para a página de login em caso de erro
+
+    # CORRETO: Renderiza o template da página de login para requisições GET
     return render(request, "admin/login.html")
-# ... (Suas outras views de admin) ...
+
+
+# View para exibir o dashboard do administrador
+@login_required # Garante que o usuário esteja logado
+@user_passes_test(lambda u: u.is_staff) # Garante que o usuário seja staff
+def admin_dashboard(request):
+    # ALTERADO: Renderiza o template do dashboard em vez de redirecionar
+    # Supondo que seu template seja 'admin/dashboard.html'
+    # Ajuste o nome/caminho do template se necessário.
+    return render(request, 'admin/dashboard.html') 
+
+# As views abaixo são para exibir páginas, então render() está CORRETO.
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_dashboard(request): return render(request, "admin/dashboard.html")
+def admin_anuncios(request):
+    # Adicione aqui o contexto necessário para o template, se houver
+    # context = {'anuncios': Anuncio.objects.all()}
+    # return render(request, "admin/anuncios.html", context)
+    return render(request, "admin/anuncios.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_anuncios(request): return render(request, "admin/anuncios.html")
+def admin_usuarios(request):
+    return render(request, "admin/usuarios.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_usuarios(request): return render(request, "admin/usuarios.html")
+def admin_gerenciar_usuario(request):
+    # Geralmente, uma view "gerenciar_X" pode receber um ID para gerenciar um item específico
+    # ou pode ser uma página com um formulário para criar/editar.
+    # Se receber um ID, você o pegaria aqui (ex: request.GET.get('id') ou da URL).
+    return render(request, "admin/gerenciar_usuario.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_usuario(request): return render(request, "admin/gerenciar_usuario.html")
+def admin_reportes(request):
+    return render(request, "admin/reportes.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_reportes(request): return render(request, "admin/reportes.html")
+def admin_gerenciar_reporte(request):
+    return render(request, "admin/gerenciar_reporte.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_reporte(request): return render(request, "admin/gerenciar_reporte.html")
+def admin_reportes_arquivados(request):
+    return render(request, "admin/reportes_arquivados.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_reportes_arquivados(request): return render(request, "admin/reportes_arquivados.html")
+def admin_gerenciar_reporte_arquivado(request):
+    return render(request, "admin/gerenciar_reporte_arquivado.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_reporte_arquivado(request): return render(request, "admin/gerenciar_reporte_arquivado.html")
+def admin_pedidos(request):
+    return render(request, "admin/pedidos.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_pedidos(request): return render(request, "admin/pedidos.html")
+def admin_gerenciar_pedido(request):
+    return render(request, "admin/gerenciar_pedido.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_pedido(request): return render(request, "admin/gerenciar_pedido.html")
+def admin_pedidos_finalizados(request):
+    return render(request, "admin/pedidos_finalizados.html")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
-def admin_pedidos_finalizados(request): return render(request, "admin/pedidos_finalizados.html")
-@login_required
-@user_passes_test(lambda u: u.is_staff)
-def admin_gerenciar_pedido_finalizado(request): return render(request, "admin/gerenciar_pedido_finalizado.html")
-@login_required
-def admin_logout(request): logout(request); return redirect('marketplace:login')
+def admin_gerenciar_pedido_finalizado(request):
+    return render(request, "admin/gerenciar_pedido_finalizado.html")
+
+# View para processar o logout do administrador
+@login_required # Garante que apenas usuários logados possam tentar deslogar
+def admin_logout(request):
+    logout(request)
+    return redirect('marketplace:admin_login') # CORRETO: Redireciona para a página de login após logout
 
 
 # ========================

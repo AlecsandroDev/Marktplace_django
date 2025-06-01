@@ -5,9 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Gerenciar Reporte Arquivado</title>
-  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/css/gerenciar_reporte.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/gerenciar_reporte.css' %}">
 </head>
 
 <body>
@@ -35,7 +35,7 @@
         <p><strong>E-mail:</strong> <a href="mailto:{{ reporte.usuario.email }}">{{ reporte.usuario.email }}</a></p>
 
         <div class="bottom-links">
-          <a href="{% url 'reportes_arquivados' %}">Voltar</a>
+          <a href="{% url 'marketplace:admin_reportes_arquivados' %}">Voltar</a>
         </div>
       </div>
     </div>

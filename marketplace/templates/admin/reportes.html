@@ -5,9 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Reportes</title>
-  <link rel="stylesheet" href="{% static 'accounts/css/default_page.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/css/navbar.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/css/reportes.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/default_page.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/reportes.css' %}">
 </head>
 
 <body>
@@ -42,7 +42,7 @@
     </table>
   </div>
   <div class="bottom-links">
-    <a href="{% url 'reportes_arquivados' %}">Arquivados</a>
+    <a href="{% url 'marketplace:admin_reportes_arquivados' %}">Arquivados</a>
   </div>
 </body>
 
