@@ -1,0 +1,53 @@
+para o banco de dados funcionar:
+
+NO MYSQL:
+
+1. Instale o MySQL.
+
+2. Crie um banco chamado `marketplace_django`: CREATE DATABASE marketplace_django CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+3. Crie um usuário e senha (rode uma linha por vez no mysql): 
+	CREATE USER 'seu_usuario'@'localhost' IDENTIFIED BY 'sua_senha';
+	GRANT ALL PRIVILEGES ON marketplace.* TO 'seu_usuario'@'localhost';
+	FLUSH PRIVILEGES;
+
+NO TERMINAL (execute como administrador na pasta do projeto):
+
+4. Crie um ambiente virtual: python -m venv venv
+
+5. Ative o ambiente virtual (Windows): venv\Scripts\activate
+
+6. Instale as dependências: pip install -r requirements.txt
+
+CONFIGURAR VARIÁVEIS DE AMBIENTE:
+
+7. Crie um arquivo .env na raiz do projeto com:
+
+SECRET_KEY=sua_chave_secreta_aqui
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+
+DB_NAME=marketplace_django
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_HOST=127.0.0.1
+DB_PORT=3306
+
+8. Adicionar a arquivo .gitignore na raiz (crie se não tiver):
+.env
+venv/
+__pycache__/
+db.sqlite3
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+
+8. Rodar as migrações:
+python manage.py makemigrations
+python manage.py migrate
+
+9. Criar superusuário: python manage.py createsuperuser
+
+10. Rodar o servidor: python manage.py runserver
