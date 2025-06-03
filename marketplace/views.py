@@ -3,44 +3,36 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
+from django.db import transaction
+from django.db.models import Q
+from .models import Perfil, Categoria, Anuncio, ItemListaDesejos, Avaliacao, Pedido, Reporte, Cep
 
-# Dados de placeholder (nível do módulo para reuso)
-_placeholder_all_products = [
-    {'id': 1, 'nome': 'Bolo de Cenoura Delicioso', 'preco': '22.50', 'vendedor_nome': 'Doceria da Maria',
-     'imagem_arquivo_local': 'bolo_de_cenoura.png', 'categoria_id': 'doces',
-     'descricao_longa': 'Um delicioso e fofinho bolo de cenoura com cobertura de chocolate artesanal...'},
-    {'id': 2, 'nome': 'Coxinha Crocante (Unidade)', 'preco': '7.00', 'vendedor_nome': 'Salgados Express',
-     'imagem_arquivo_local': 'coxinha.png', 'categoria_id': 'salgados',
-     'descricao_longa': 'Nossa famosa coxinha de frango com catupiry...'},
-    {'id': 4, 'nome': 'PF Executivo - Frango Grelhado', 'preco': '28.00', 'vendedor_nome': 'Restaurante Sabor Caseiro',
-     'imagem_arquivo_local': 'frango_grelhado.png', 'categoria_id': 'pratos_prontos',
-     'descricao_longa': 'Prato feito completo com frango grelhado suculento...'},
-    {'id': 5, 'nome': 'Brigadeiro Gourmet (Unidade)', 'preco': '4.50', 'vendedor_nome': 'Doceria da Maria',
-     'imagem_arquivo_local': 'brigadeiro.png', 'categoria_id': 'doces',
-     'descricao_longa': 'Brigadeiro gourmet feito com chocolate nobre...'},
-    {'id': 6, 'nome': 'Mini Pizza Calabresa', 'preco': '8.00', 'vendedor_nome': 'Pizzaria Universitária',
-     'imagem_arquivo_local': 'mini_pizza_calabresa.png', 'categoria_id': 'lanchinhos',
-     'descricao_longa': 'Mini pizza individual com massa artesanal...'},
-    {'id': 7, 'nome': 'Empada de Palmito', 'preco': '6.50', 'vendedor_nome': 'Salgados da Tia',
-     'imagem_arquivo_local': 'empada_de_palmito.png', 'categoria_id': 'salgados',
-     'descricao_longa': 'Delicada empada de palmito com massa que desmancha...'},
-]
+# Dados de placeholder (nível do módulo para reuso) - Luan: removido pois dados virão do Banco de Dados
+# _placeholder_all_products removido
+# _filter_categorias_example removido
+# __simulacao_ids_favoritados removido
 
-_filter_categorias_example = [
-    {'id': 'pratos_prontos', 'nome_exibicao': 'Pratos Prontos', 'icone': '🍽️'},
-    {'id': 'lanchinhos', 'nome_exibicao': 'Lanchinhos', 'icone': '🥪'},
-    {'id': 'doces', 'nome_exibicao': 'Doces', 'icone': '🍰'},
-    {'id': 'salgados', 'nome_exibicao': 'Salgados', 'icone': '🥐'},
-]
+# SIMULAÇÃO DA LISTA DE DESEJOS EM MEMÓRIA - Luan: removido pois dados virão do Banco de Dados
+# __simulacao_ids_favoritados removido
+# Ex: Produto 1 (Bolo) e 4 (PF) estão favoritados
 
-# SIMULAÇÃO DA LISTA DE DESEJOS EM MEMÓRIA
-_simulacao_ids_favoritados = [1, 4] # Ex: Produto 1 (Bolo) e 4 (PF) estão favoritados
+# ========= FUNÇÕES PARA USO POSTERIOR =========
+def is_comprador(user):
+    return user.is_authenticated and hasattr(user, 'perfil') and user.perfil.tipo == 'comprador'
 
+def is_vendedor(user): # Se você for usar esta também
+    return user.is_authenticated and hasattr(user, 'perfil') and user.perfil.tipo == 'vendedor'
+
+def staff_user_check(user): # Para proteger views de admin
+    return user.is_staff
 
 # ========= VIEWS PÚBLICAS / DE ENTRADA =========
 def landing_page(request):
+    if is_comprador(request.user):
+        return redirect('marketplace:pagina_inicial_comprador')
     return render(request, 'comprador/inicial.html')
+# LUAN - CONTINUAR DAQUI
 
 # ========= VIEWS DO ADMIN ==========   
 def admin_login(request):
@@ -324,49 +316,75 @@ def detalhes_produto(request, produto_id):
 
 # --- VIEWS PARA LISTA DE DESEJOS (SIMULADAS) ---
 @login_required
-def adicionar_aos_desejos(request, produto_id):
-    global _simulacao_ids_favoritados
-    produto_id = int(produto_id)
-    if produto_id not in _simulacao_ids_favoritados:
-        _simulacao_ids_favoritados.append(produto_id)
-        messages.success(request, "Produto adicionado à sua lista de desejos!")
+def adicionar_aos_desejos(request, produto_id): # produto_id refere-se a Anuncio.id
+    if not is_comprador(request.user): # Usando o helper definido anteriormente
+        # Pode retornar um erro, ou redirecionar, ou mostrar mensagem
+        messages.error(request, "Apenas compradores podem adicionar itens à lista de desejos.")
+        return redirect(request.META.get('HTTP_REFERER', 'marketplace:pagina_inicial_comprador'))
+
+    anuncio = get_object_or_404(Anuncio, pk=produto_id)
+    item, created = ItemListaDesejos.objects.get_or_create(usuario=request.user, anuncio=anuncio)
+    
+    if created:
+        messages.success(request, f"'{anuncio.titulo}' foi adicionado à sua lista de desejos!")
     else:
-        messages.info(request, "Este produto já está na sua lista de desejos.")
+        messages.info(request, f"'{anuncio.titulo}' já estava na sua lista de desejos.")
+    
     return redirect(request.META.get('HTTP_REFERER', 'marketplace:lista_desejos'))
 
 @login_required
-def remover_dos_desejos(request, produto_id):
-    global _simulacao_ids_favoritados
-    produto_id = int(produto_id)
-    if produto_id in _simulacao_ids_favoritados:
-        _simulacao_ids_favoritados.remove(produto_id)
-        messages.success(request, "Produto removido da sua lista de desejos!")
-    else:
-        messages.info(request, "Este produto não estava na sua lista de desejos.")
+def remover_dos_desejos(request, produto_id): # produto_id refere-se a Anuncio.id
+    if not is_comprador(request.user):
+        messages.error(request, "Apenas compradores podem remover itens da lista de desejos.")
+        return redirect(request.META.get('HTTP_REFERER', 'marketplace:pagina_inicial_comprador'))
+
+    anuncio = get_object_or_404(Anuncio, pk=produto_id)
+    try:
+        item = ItemListaDesejos.objects.get(usuario=request.user, anuncio=anuncio)
+        item.delete()
+        messages.success(request, f"'{anuncio.titulo}' foi removido da sua lista de desejos.")
+    except ItemListaDesejos.DoesNotExist:
+        messages.info(request, f"'{anuncio.titulo}' não estava na sua lista de desejos.")
+        
     return redirect(request.META.get('HTTP_REFERER', 'marketplace:lista_desejos'))
 
 @login_required
 def lista_desejos(request):
-    if request.user.is_staff:
-        logout(request)
-        messages.error(request, "Página não disponível para administradores.")
-        return redirect('marketplace:landing_page')
+    if not is_comprador(request.user):
+        logout(request) # Se um admin ou outro tipo de usuário acessar, desloga.
+        messages.error(request, "Página não disponível para este tipo de usuário.")
+        return redirect('marketplace:comprador_login')
         
     nome_usuario = request.user.first_name or request.user.username
     
-    produtos_favoritados_list = [p for p in _placeholder_all_products if p.get('id') in _simulacao_ids_favoritados]
-    # Adiciona status de favorito (todos serão True aqui)
-    produtos_favoritados_list = _enrich_products_with_favorite_status(produtos_favoritados_list, _simulacao_ids_favoritados)
+    # Busca os itens da lista de desejos e os anúncios relacionados
+    itens_desejados = ItemListaDesejos.objects.filter(usuario=request.user).select_related('anuncio', 'anuncio__usuario', 'anuncio__categoria').order_by('-data_adicao')
+    
+    # Prepara a lista de anúncios para o template, similar ao home_comprador
+    anuncios_favoritados_display = []
+    for item in itens_desejados:
+        anuncios_favoritados_display.append({
+            'obj': item.anuncio,
+            'is_favorited': True # Todos aqui são favoritados por definição
+        })
 
     context = {
         'nome_usuario': nome_usuario,
-        'produtos_favoritados': produtos_favoritados_list,
+        'anuncios_favoritados_display': anuncios_favoritados_display, # Passa a lista processada
     }
     return render(request, 'comprador/lista_desejos.html', context)
 # --- FIM DAS VIEWS PARA LISTA DE DESEJOS ---
 
 @login_required
 def comprador_logout(request):
+    # Verifica se o usuário logado é um comprador antes de fazer logout desta URL específica
+    # Isso é opcional, pois @login_required já garante que há um usuário.
+    # if not is_comprador(request.user):
+    #     messages.warning(request, "Você não estava logado como comprador.")
+    #     # Pode redirecionar para uma página de logout genérica ou landing page
+    #     logout(request)
+    #     return redirect('marketplace:landing_page')
+
     logout(request)
     messages.info(request, "Você saiu da sua conta.")
-    return redirect('marketplace:landing_page')
+    return redirect('marketplace:landing_page') # Redireciona para a landing page principal
